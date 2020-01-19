@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Wjire.RPC.DotNetty.Model
+﻿namespace Wjire.RPC.DotNetty.Model
 {
     public class Request
     {

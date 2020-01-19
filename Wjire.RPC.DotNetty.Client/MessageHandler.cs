@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Wjire.RPC.DotNetty.Model;
-using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty.Client
 {
@@ -13,7 +11,7 @@ namespace Wjire.RPC.DotNetty.Client
             waiter = new MessageWaiter(timeOut);
             _messages[channelId] = waiter;
         }
-        
+
         internal void WaitResponse(MessageWaiter waiter)
         {
             waiter.WaitResponse();

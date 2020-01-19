@@ -30,7 +30,7 @@ namespace Client
                         var person = client.GetPerson(Interlocked.Increment(ref num));
                         Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(person));
                     })
-                    { IsBackground = true };
+                { IsBackground = true };
             }
 
             foreach (Thread t in threads)
