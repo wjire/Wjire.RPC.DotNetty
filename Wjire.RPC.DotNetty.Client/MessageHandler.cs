@@ -6,15 +6,15 @@ namespace Wjire.RPC.DotNetty.Client
     internal class MessageHandler
     {
         private readonly ConcurrentDictionary<string, MessageWaiter> _messages = new ConcurrentDictionary<string, MessageWaiter>();
-        internal void ReadyToWait(string channelId, TimeSpan timeOut, out MessageWaiter waiter)
+        internal void ReadyToWait(string channelId,out MessageWaiter waiter)
         {
-            waiter = new MessageWaiter(timeOut);
+            waiter = new MessageWaiter();
             _messages[channelId] = waiter;
         }
 
-        internal void WaitResponse(MessageWaiter waiter)
+        internal void WaitResponse(MessageWaiter waiter,TimeSpan timeOut)
         {
-            waiter.WaitResponse();
+            waiter.WaitResponse(timeOut);
         }
 
 

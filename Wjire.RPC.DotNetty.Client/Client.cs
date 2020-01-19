@@ -43,7 +43,6 @@ namespace Wjire.RPC.DotNetty.Client
             catch (Exception)
             {
                 _group?.ShutdownGracefullyAsync().Wait();
-                _group = null;
                 throw;
             }
         }
@@ -61,10 +60,10 @@ namespace Wjire.RPC.DotNetty.Client
                     ServiceName = ServiceType.FullName
                 };
                 string channelId = channel.Id.AsLongText();
-                _messageHandler.ReadyToWait(channelId, TimeOut, out var messageWaiter);
+                _messageHandler.ReadyToWait(channelId, out var messageWaiter);
                 var buffer = _serializer.ToBytes(request);
                 channel.WriteAndFlushAsync(Unpooled.WrappedBuffer(buffer));
-                _messageHandler.WaitResponse(messageWaiter);
+                _messageHandler.WaitResponse(messageWaiter, TimeOut);
                 _messageHandler.RemoveWaiter(channelId);
                 result = GetResponse(messageWaiter.ResponseString, request.MethodName);
                 return true;
