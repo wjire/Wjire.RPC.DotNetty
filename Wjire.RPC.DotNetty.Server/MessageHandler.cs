@@ -12,7 +12,7 @@ namespace Wjire.RPC.DotNetty.Server
         internal ISerializer Serializer = new JsonSerializer();
         private IServiceProvider _serviceProvider;
         private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
-
+        
         internal void InitServicesMap(ServiceCollection services)
         {
             foreach (ServiceDescriptor service in services)
@@ -28,6 +28,40 @@ namespace Wjire.RPC.DotNetty.Server
             try
             {
                 Request request = Serializer.ToObject<Request>(requestString);
+                //Console.Write(request.Arguments[0] + ",");
+                if (_servicesMap.TryGetValue(request.ServiceName, out Type serviceType) == false)
+                {
+                    throw new ArgumentException($"not find the service : {request.ServiceName}");
+                }
+
+                MethodInfo methodInfo = serviceType.GetMethod(request.MethodName);
+                if (methodInfo == null)
+                {
+                    throw new ArgumentException($"not find the method:{request.MethodName} on service:{request.ServiceName}");
+                }
+                CheckArguments(request.Arguments, methodInfo.GetParameters());
+                object service = _serviceProvider.GetService(serviceType);
+                var result = methodInfo.Invoke(service, request.Arguments);
+                return Serializer.ToBytes(new Response
+                {
+                    Data = result,
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Serializer.ToBytes(new Response
+                {
+                    Message = ex.ToString(),
+                });
+            }
+        }
+
+
+        internal byte[] GetResponseBytes(Request request)
+        {
+            try
+            {
                 Console.Write(request.Arguments[0] + ",");
                 if (_servicesMap.TryGetValue(request.ServiceName, out Type serviceType) == false)
                 {

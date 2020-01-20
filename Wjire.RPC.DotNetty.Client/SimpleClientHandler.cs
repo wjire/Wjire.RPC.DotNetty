@@ -5,28 +5,34 @@ using DotNetty.Transport.Channels;
 
 namespace Wjire.RPC.DotNetty.Client
 {
-    internal class ClientHandler : ChannelHandlerAdapter
+    internal class SimpleClientHandler : SimpleChannelInboundHandler<IByteBuffer>
     {
         private readonly MessageHandler _messageHandler;
 
-        internal ClientHandler(MessageHandler messageHandler)
+        internal SimpleClientHandler(MessageHandler messageHandler)
         {
             _messageHandler = messageHandler;
         }
 
-        public override void ChannelRead(IChannelHandlerContext context, object message)
+        public override bool IsSharable => true;
+
+        protected override void ChannelRead0(IChannelHandlerContext context, IByteBuffer message)
         {
-            var buffer = message as IByteBuffer;
-            var msg = buffer.ToString(Encoding.UTF8);
+            var msg = message.ToString(Encoding.UTF8);
             string channelId = context.Channel.Id.AsLongText();
             _messageHandler.SetResponseCompleted(channelId, msg);
-            
         }
+
 
         public override void ChannelReadComplete(IChannelHandlerContext context)
         {
-            //context.Flush();
             context.CloseAsync();
+        }
+
+
+        public override void ChannelActive(IChannelHandlerContext context)
+        {
+            base.ChannelActive(context);
         }
 
 

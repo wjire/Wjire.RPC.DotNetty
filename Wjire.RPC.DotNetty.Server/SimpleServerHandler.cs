@@ -1,33 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using Wjire.RPC.DotNetty.Model;
 
 namespace Wjire.RPC.DotNetty.Server
 {
-    public class ServerHandler : ChannelHandlerAdapter
+    //Netty 建议服务端不要用这个类
+
+    public class SimpleServerHandler : SimpleChannelInboundHandler<IByteBuffer>
     {
         private readonly MessageHandler _messageHandler;
 
-        private static int count;
+        public SimpleServerHandler(MessageHandler messageHandler)
+        {
+            _messageHandler = messageHandler;
+        }
 
         public override bool IsSharable => true;
 
-        public ServerHandler(MessageHandler messageHandler)
+        protected override void ChannelRead0(IChannelHandlerContext ctx, IByteBuffer msg)
         {
-            _messageHandler = messageHandler;
-            Console.WriteLine($"new ServerHandler({Interlocked.Increment(ref count)})");
-        }
-
-        public override void ChannelRead(IChannelHandlerContext context, object message)
-        {
-            var byteBuffer = message as IByteBuffer;
-            var msg = byteBuffer.ToString(Encoding.UTF8);
-            var buffer = _messageHandler.GetResponseBytes(msg);
+            var requestString = msg.ToString(Encoding.UTF8);
+            var buffer = _messageHandler.GetResponseBytes(requestString);
             IByteBuffer wrappedBuffer = Unpooled.WrappedBuffer(buffer);
-            //context.WriteAndFlushAsync(wrappedBuffer);
-            context.WriteAsync(wrappedBuffer);
+            ctx.WriteAsync(wrappedBuffer);
         }
 
         public override void ChannelReadComplete(IChannelHandlerContext context)

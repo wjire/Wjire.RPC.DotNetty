@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
@@ -16,12 +17,14 @@ namespace Wjire.RPC.DotNetty.Server
         private readonly ServerBootstrap _bootstrap;
         private readonly MessageHandler _messageHandler = new MessageHandler();
 
+
         public Server(int port)
         {
             try
             {
-                Console.WriteLine($"{DateTime.Now} 开始创建服务!");
                 _port = port;
+                Console.WriteLine($"{DateTime.Now} 开始创建服务!");
+                var handler = new SimpleServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
                 // 服务器引导程序
@@ -31,7 +34,7 @@ namespace Wjire.RPC.DotNetty.Server
                     .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                     {
                         var pipeline = channel.Pipeline;
-                        pipeline.AddLast(new ServerHandler(_messageHandler));
+                        pipeline.AddLast(handler);
                     }));
             }
             catch (Exception)

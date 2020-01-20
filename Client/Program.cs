@@ -13,7 +13,7 @@ namespace Client
 
         static void Main(string[] args)
         {
-            Test2(20000);
+            Test2(11112);
             Console.WriteLine("over");
             Console.ReadKey();
         }
