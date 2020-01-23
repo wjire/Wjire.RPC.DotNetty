@@ -13,7 +13,14 @@ namespace Client
 
         static void Main(string[] args)
         {
-            Test2(11112);
+            var test = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
+            var foo = ClientFactory.GetClient<IFoo>("127.0.0.1", 7878);
+            var testResult = test.GetPerson(1);
+            Console.WriteLine(JsonConvert.SerializeObject(testResult));
+            Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
+
+
+            //Test2(11112);
             Console.WriteLine("over");
             Console.ReadKey();
         }
