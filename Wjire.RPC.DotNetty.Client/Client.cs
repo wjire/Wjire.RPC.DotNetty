@@ -24,15 +24,16 @@ namespace Wjire.RPC.DotNetty.Client
 
         private ISerializer _serializer = new JsonSerializer();
 
-        private readonly IEventLoopGroup _group = new MultithreadEventLoopGroup();
         public Client()
         {
+            IEventLoopGroup group = null;
             try
             {
+                group = new MultithreadEventLoopGroup();
                 var handler = new SimpleClientHandler(_messageHandler);
                 Console.WriteLine("new Client()");
                 _bootstrap = new Bootstrap()
-                    .Group(_group)
+                    .Group(group)
                     .Channel<TcpSocketChannel>()
                     .Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
                     {
@@ -42,7 +43,7 @@ namespace Wjire.RPC.DotNetty.Client
             }
             catch (Exception)
             {
-                _group?.ShutdownGracefullyAsync().Wait();
+                group?.ShutdownGracefullyAsync().Wait();
                 throw;
             }
         }

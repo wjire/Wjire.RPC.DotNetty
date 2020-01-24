@@ -43,7 +43,7 @@ namespace Wjire.RPC.DotNetty.Server
                 Task.WaitAll(_client?.ShutdownGracefullyAsync(), _acceptor?.ShutdownGracefullyAsync());
                 _client = null;
                 _acceptor = null;
-                Console.WriteLine("创建服务发生异常!");
+                throw;
             }
         }
 
