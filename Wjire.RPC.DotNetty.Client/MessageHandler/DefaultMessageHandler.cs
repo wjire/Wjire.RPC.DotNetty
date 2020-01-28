@@ -37,18 +37,13 @@ namespace Wjire.RPC.DotNetty.Client
             }
             catch (Exception)
             {
-                Waiters.TryRemove(channelId, out var value);
+                Waiters.TryRemove(channelId, out ClientWaiter value);
                 throw;
             }
             finally
             {
                 messageWaiter.Dispose();
             }
-        }
-
-        protected override string GetChannelId(IChannel channel)
-        {
-            return channel.Id.AsLongText();
         }
     }
 }

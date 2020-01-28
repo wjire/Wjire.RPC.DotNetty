@@ -27,7 +27,7 @@ namespace Wjire.RPC.DotNetty.Client
         {
             if (evt is IdleStateEvent)
             {
-                Console.WriteLine(context.Channel.Id.AsLongText() + " 连接空闲太久,开始关闭");
+                Console.WriteLine(_messageHandler.GetChannelId(context.Channel) + " 连接空闲太久,开始关闭");
                 context.WriteAndFlushAsync(Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes(HEARTBEAT))).ContinueWith(
                     t =>
                     {

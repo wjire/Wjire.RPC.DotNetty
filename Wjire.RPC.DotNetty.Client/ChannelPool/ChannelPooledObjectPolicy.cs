@@ -8,17 +8,17 @@ namespace Wjire.RPC.DotNetty.Client.ChannelPool
     public class ChannelPooledObjectPolicy : IPooledObjectPolicy<IChannel>
     {
         private readonly Bootstrap _bootstrap;
-        private readonly IPEndPoint _ipEndPoint;
+        private readonly IPEndPoint _remoteAddress;
 
-        public ChannelPooledObjectPolicy(Bootstrap bootstrap, IPEndPoint ipEndPoint)
+        public ChannelPooledObjectPolicy(Bootstrap bootstrap, IPEndPoint remoteAddress)
         {
             _bootstrap = bootstrap;
-            _ipEndPoint = ipEndPoint;
+            _remoteAddress = remoteAddress;
         }
 
         public IChannel Create()
         {
-            return AsyncHelpers.RunSync(() => _bootstrap.ConnectAsync(_ipEndPoint));
+            return AsyncHelpers.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
         }
 
         public bool Return(IChannel obj)

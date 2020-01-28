@@ -19,7 +19,7 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-            Test2(11111);
+            Test2(1111);
             Console.WriteLine("over");
             Console.ReadKey();
         }

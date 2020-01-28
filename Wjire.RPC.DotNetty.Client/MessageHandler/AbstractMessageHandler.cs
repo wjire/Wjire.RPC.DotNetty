@@ -18,8 +18,11 @@ namespace Wjire.RPC.DotNetty.Client
             waiter.ByteBuffer.Retain();
         }
 
-        public abstract object GetResponse(IChannel channel, Type serviceType, Request request, TimeSpan timeOut);
+        public virtual string GetChannelId(IChannel channel)
+        {
+            return channel.Id.AsLongText();
+        }
 
-        protected abstract string GetChannelId(IChannel channel);
+        public abstract object GetResponse(IChannel channel, Type serviceType, Request request, TimeSpan timeOut);
     }
 }

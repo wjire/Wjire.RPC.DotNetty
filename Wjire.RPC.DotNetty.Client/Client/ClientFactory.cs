@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Net;
 using ImpromptuInterface;
 
 namespace Wjire.RPC.DotNetty.Client
@@ -12,24 +11,22 @@ namespace Wjire.RPC.DotNetty.Client
 
         public static T GetClient<T>(string ipString, int port) where T : class
         {
-            return GetClient<T>(ipString, port, TimeSpan.FromSeconds(30));
+            return GetClient<T>(new ClientConfig(ipString, port));
         }
 
 
-        public static T GetClient<T>(string ipString, int port, TimeSpan timeOut) where T : class
+        public static T GetClient<T>(ClientConfig config) where T : class
         {
-            string key = $"{ipString}:{port}_{typeof(T).FullName}";
+            string key = $"{config.RemoteAddress}_{typeof(T).FullName}";
             Lazy<object> service = FuncServices.GetOrAdd(key, k =>
             {
                 return new Lazy<object>(() =>
                 {
-                    IPEndPoint remoteAddress = new IPEndPoint(IPAddress.Parse(ipString), port);
-                    Client client = new Client(remoteAddress, typeof(T), timeOut);
+                    Client client = new Client(typeof(T), config);
                     return client.ActLike<T>();
                 });
             });
             return (T)service.Value;
         }
-
     }
 }
