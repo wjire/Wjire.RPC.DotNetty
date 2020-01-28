@@ -7,20 +7,19 @@ using Wjire.RPC.DotNetty.Client;
 
 namespace Client
 {
-    class Program
+    internal class Program
     {
         private static int num;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var test = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
-            var foo = ClientFactory.GetClient<IFoo>("127.0.0.1", 7878);
-            var testResult = test.GetPerson(1);
-            Console.WriteLine(JsonConvert.SerializeObject(testResult));
-            Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
+            //ITest test = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
+            //IFoo foo = ClientFactory.GetClient<IFoo>("127.0.0.1", 7878);
+            //Person testResult = test.GetPerson(1);
+            //Console.WriteLine(JsonConvert.SerializeObject(testResult));
+            //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-
-            //Test2(11112);
+            Test2(11111);
             Console.WriteLine("over");
             Console.ReadKey();
         }
@@ -34,7 +33,7 @@ namespace Client
                     {
                         ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
                         //Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(client.GetPerson(Interlocked.Increment(ref num)))+"\r\n");
-                        var person = client.GetPerson(Interlocked.Increment(ref num));
+                        Person person = client.GetPerson(Interlocked.Increment(ref num));
                         Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(person));
                     })
                 { IsBackground = true };
@@ -50,15 +49,16 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
+            ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             for (int i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = Task.Run(() =>
                 {
-                    ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
                     //Console.Write(client.GetPerson(Interlocked.Increment(ref num)).Id + ",");
-                    var person = client.GetPerson(Interlocked.Increment(ref num));
+                    Person person = client.GetPerson(Interlocked.Increment(ref num));
                     Console.WriteLine(JsonConvert.SerializeObject(person));
                 });
+                //Thread.Sleep(100);
             }
 
             Task.WaitAll(tasks);

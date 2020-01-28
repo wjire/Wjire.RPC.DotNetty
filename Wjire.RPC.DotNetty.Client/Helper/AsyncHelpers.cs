@@ -11,6 +11,37 @@ namespace Wjire.RPC.DotNetty.Client
     internal static class AsyncHelpers
     {
 
+
+        /// <summary>
+        /// Execute's an async Task<T> method which has a void return value synchronously
+        /// </summary>
+        /// <param name="task">Task<T> method to execute</param>
+        public static void RunSync(Func<Task> task)
+        {
+            SynchronizationContext oldContext = SynchronizationContext.Current;
+            ExclusiveSynchronizationContext synch = new ExclusiveSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(synch);
+            synch.Post(async _ =>
+            {
+                try
+                {
+                    await task();
+                }
+                catch (Exception e)
+                {
+                    synch.InnerException = e;
+                    throw;
+                }
+                finally
+                {
+                    synch.EndMessageLoop();
+                }
+            }, null);
+            synch.BeginMessageLoop();
+            SynchronizationContext.SetSynchronizationContext(oldContext);
+        }
+
+
         /// <summary>
         /// Execute's an async Task<T> method which has a T return type synchronously
         /// </summary>

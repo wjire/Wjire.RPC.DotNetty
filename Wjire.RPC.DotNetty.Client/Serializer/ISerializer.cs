@@ -1,14 +1,14 @@
 ﻿using System;
+using DotNetty.Buffers;
 
-namespace Wjire.RPC.DotNetty.Serializer
+namespace Wjire.RPC.DotNetty.Client
 {
     public interface ISerializer
     {
         object ToObject(object obj, Type type);
 
-        T ToObject<T>(string objString);
-
         byte[] ToBytes(object obj);
 
+        T ToObject<T>(IByteBuffer byteBuffer);
     }
 }

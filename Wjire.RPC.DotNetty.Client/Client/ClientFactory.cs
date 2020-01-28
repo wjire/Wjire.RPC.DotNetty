@@ -18,17 +18,13 @@ namespace Wjire.RPC.DotNetty.Client
 
         public static T GetClient<T>(string ipString, int port, TimeSpan timeOut) where T : class
         {
-            var key = $"{ipString}:{port}_{typeof(T).FullName}";
+            string key = $"{ipString}:{port}_{typeof(T).FullName}";
             Lazy<object> service = FuncServices.GetOrAdd(key, k =>
             {
                 return new Lazy<object>(() =>
                 {
-                    Client client = new Client
-                    {
-                        IPEndPoint = new IPEndPoint(IPAddress.Parse(ipString), port),
-                        ServiceType = typeof(T),
-                        TimeOut = timeOut,
-                    };
+                    IPEndPoint remoteAddress = new IPEndPoint(IPAddress.Parse(ipString), port);
+                    Client client = new Client(remoteAddress, typeof(T), timeOut);
                     return client.ActLike<T>();
                 });
             });

@@ -22,9 +22,9 @@ namespace Wjire.RPC.DotNetty.Server
 
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
-            var byteBuffer = message as IByteBuffer;
-            var msg = byteBuffer.ToString(Encoding.UTF8);
-            var buffer = _messageHandler.GetResponseBytes(msg);
+            IByteBuffer byteBuffer = message as IByteBuffer;
+            string msg = byteBuffer.ToString(Encoding.UTF8);
+            byte[] buffer = _messageHandler.GetResponseBytes(msg);
             IByteBuffer wrappedBuffer = Unpooled.WrappedBuffer(buffer);
             //context.WriteAndFlushAsync(wrappedBuffer);
             context.WriteAsync(wrappedBuffer);

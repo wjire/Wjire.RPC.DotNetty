@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Wjire.RPC.DotNetty.Model;
 using Wjire.RPC.DotNetty.Serializer;
+using JsonSerializer = Wjire.RPC.DotNetty.Serializer.JsonSerializer;
 
 namespace Wjire.RPC.DotNetty.Server
 {
@@ -12,7 +14,7 @@ namespace Wjire.RPC.DotNetty.Server
         internal ISerializer Serializer = new JsonSerializer();
         private IServiceProvider _serviceProvider;
         private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
-        
+
         internal void InitServicesMap(ServiceCollection services)
         {
             foreach (ServiceDescriptor service in services)
@@ -28,7 +30,7 @@ namespace Wjire.RPC.DotNetty.Server
             try
             {
                 Request request = Serializer.ToObject<Request>(requestString);
-                //Console.Write(request.Arguments[0] + ",");
+                Console.Write(JsonConvert.SerializeObject(request));
                 if (_servicesMap.TryGetValue(request.ServiceName, out Type serviceType) == false)
                 {
                     throw new ArgumentException($"not find the service : {request.ServiceName}");
@@ -41,7 +43,7 @@ namespace Wjire.RPC.DotNetty.Server
                 }
                 CheckArguments(request.Arguments, methodInfo.GetParameters());
                 object service = _serviceProvider.GetService(serviceType);
-                var result = methodInfo.Invoke(service, request.Arguments);
+                object result = methodInfo.Invoke(service, request.Arguments);
                 return Serializer.ToBytes(new Response
                 {
                     Data = result,
@@ -75,7 +77,7 @@ namespace Wjire.RPC.DotNetty.Server
                 }
                 CheckArguments(request.Arguments, methodInfo.GetParameters());
                 object service = _serviceProvider.GetService(serviceType);
-                var result = methodInfo.Invoke(service, request.Arguments);
+                object result = methodInfo.Invoke(service, request.Arguments);
                 return Serializer.ToBytes(new Response
                 {
                     Data = result,

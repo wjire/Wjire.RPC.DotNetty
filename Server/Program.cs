@@ -1,16 +1,15 @@
-﻿using System;
-using IServices;
+﻿using IServices;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
 
 namespace Server
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var server = new Wjire.RPC.DotNetty.Server.Server(7878);
-            var services = new ServiceCollection();
+            Wjire.RPC.DotNetty.Server.Server server = new Wjire.RPC.DotNetty.Server.Server(7878);
+            ServiceCollection services = new ServiceCollection();
             services.AddSingleton<ITest, Test>();
             services.AddSingleton<IFoo, Foo>();
             server.RegisterServices(services);

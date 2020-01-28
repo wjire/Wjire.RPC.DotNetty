@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using IServices;
 
 namespace Services
@@ -12,7 +10,7 @@ namespace Services
             return new Person
             {
                 Date = DateTime.Now,
-                Id = new Random().Next(1, Int32.MaxValue),
+                Id = new Random().Next(1, int.MaxValue),
                 Name = Guid.NewGuid().ToString()
             };
         }

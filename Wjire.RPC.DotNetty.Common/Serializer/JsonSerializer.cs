@@ -23,26 +23,14 @@ namespace Wjire.RPC.DotNetty.Serializer
 
         public object ToObject(object obj, Type type)
         {
-            var json = JsonConvert.SerializeObject(obj);
+            string json = JsonConvert.SerializeObject(obj);
             return ToObject(json, type);
         }
 
         public byte[] ToBytes(object obj)
         {
-            var json = ToString(obj);
+            string json = ToString(obj);
             return Encoding.UTF8.GetBytes(json);
-        }
-
-        public T ToObject<T>(byte[] bytes)
-        {
-            var json = Encoding.UTF8.GetString(bytes);
-            return ToObject<T>(json);
-        }
-
-        public object ToObject(byte[] bytes, Type type)
-        {
-            var json = Encoding.UTF8.GetString(bytes);
-            return ToObject(json, type);
         }
     }
 }
