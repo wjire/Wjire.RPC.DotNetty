@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Wjire.RPC.DotNetty.Common\Wjire.RPC.DotNetty.Common.csproj" />
     <ProjectReference Include="..\Wjire.RPC.DotNetty.Model\Wjire.RPC.DotNetty.Model.csproj" />
   </ItemGroup>
 

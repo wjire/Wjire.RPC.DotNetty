@@ -1,6 +1,7 @@
 ﻿using System;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using Wjire.RPC.DotNetty.Common;
 using Wjire.RPC.DotNetty.Model;
 
 namespace Wjire.RPC.DotNetty.Client

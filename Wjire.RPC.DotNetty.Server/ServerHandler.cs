@@ -1,40 +1,51 @@
 ﻿using System;
 using System.Text;
-using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 
 namespace Wjire.RPC.DotNetty.Server
 {
-    public class ServerHandler : ChannelHandlerAdapter
+    //Netty 建议服务端不要用这个类.暂时不明白
+
+    public class ServerHandler : SimpleChannelInboundHandler<IByteBuffer>
     {
         private readonly MessageHandler _messageHandler;
-
-        private static int count;
-
-        public override bool IsSharable => true;
-
+        private const string HEARTBEAT = "HEARTBEAT";
         public ServerHandler(MessageHandler messageHandler)
         {
             _messageHandler = messageHandler;
-            Console.WriteLine($"new ServerHandler({Interlocked.Increment(ref count)})");
         }
 
-        public override void ChannelRead(IChannelHandlerContext context, object message)
+        public override bool IsSharable => true;
+
+        protected override void ChannelRead0(IChannelHandlerContext ctx, IByteBuffer msg)
         {
-            IByteBuffer byteBuffer = message as IByteBuffer;
-            string msg = byteBuffer.ToString(Encoding.UTF8);
-            byte[] buffer = _messageHandler.GetResponseBytes(msg);
-            IByteBuffer wrappedBuffer = Unpooled.WrappedBuffer(buffer);
-            //context.WriteAndFlushAsync(wrappedBuffer);
-            context.WriteAsync(wrappedBuffer);
+            Console.WriteLine(ctx.Channel.RemoteAddress);
+            var bytes = new byte[msg.ReadableBytes];
+            msg.ReadBytes(bytes);
+            byte[] buffer = _messageHandler.GetResponseBytes(bytes);
+            ctx.WriteAndFlushAsync(Unpooled.WrappedBuffer(buffer));
         }
 
-        public override void ChannelReadComplete(IChannelHandlerContext context)
-        {
-            context.Flush();
-            context.CloseAsync();
-        }
+
+        //protected override void ChannelRead0(IChannelHandlerContext ctx, IByteBuffer msg)
+        //{
+        //    Console.WriteLine(ctx.Channel.RemoteAddress);
+        //    string requestString = msg.ToString(Encoding.UTF8);
+        //    if (requestString.Equals(HEARTBEAT))
+        //    {
+        //        Console.WriteLine("客户端发来的心跳检测,开始关闭连接");
+        //        ctx.Channel.CloseAsync();
+        //    }
+        //    else
+        //    {
+        //        byte[] buffer = _messageHandler.GetResponseBytes(requestString);
+        //        IByteBuffer wrappedBuffer = Unpooled.WrappedBuffer(buffer);
+        //        ctx.WriteAndFlushAsync(wrappedBuffer);
+        //    }
+        //}
+
+
 
         public override void ExceptionCaught(IChannelHandlerContext context, Exception exception)
         {

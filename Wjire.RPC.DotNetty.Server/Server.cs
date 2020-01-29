@@ -4,7 +4,7 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.DependencyInjection;
-using Wjire.RPC.DotNetty.Serializer;
+using Wjire.RPC.DotNetty.Common;
 
 namespace Wjire.RPC.DotNetty.Server
 {
@@ -23,7 +23,7 @@ namespace Wjire.RPC.DotNetty.Server
             {
                 _port = port;
                 Console.WriteLine($"{DateTime.Now} 开始创建服务!");
-                SimpleServerHandler handler = new SimpleServerHandler(_messageHandler);
+                ServerHandler handler = new ServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
                 // 服务器引导程序
