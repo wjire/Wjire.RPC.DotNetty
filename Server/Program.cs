@@ -1,6 +1,7 @@
 ﻿using IServices;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
+using Wjire.RPC.DotNetty.Common;
 
 namespace Server
 {
@@ -13,6 +14,7 @@ namespace Server
             services.AddSingleton<ITest, Test>();
             services.AddSingleton<IFoo, Foo>();
             server.RegisterServices(services);
+            //server.RegisterSerializer(new RMessagePackSerializer());
             server.Start().Wait();
         }
     }

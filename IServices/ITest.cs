@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using MessagePack;
 
 namespace IServices
 {
@@ -11,18 +11,18 @@ namespace IServices
     }
 
 
+    [MessagePackObject]
     public class Person
     {
+        [Key(0)]
         public int Id { get; set; }
-
+        [Key(1)]
         public string Name { get; set; }
-
+        [Key(2)]
         public decimal Money { get; set; }
-
+        [Key(3)]
         public DateTime Date { get; set; }
-
+        [Key(4)]
         public Person Per { get; set; }
-
-        public List<Person> Persons { get; set; }
     }
 }

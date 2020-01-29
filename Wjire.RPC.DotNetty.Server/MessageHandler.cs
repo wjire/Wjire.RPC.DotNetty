@@ -5,13 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Wjire.RPC.DotNetty.Common;
 using Wjire.RPC.DotNetty.Model;
-using JsonSerializer = Wjire.RPC.DotNetty.Common.JsonSerializer;
+using RJsonSerializer = Wjire.RPC.DotNetty.Common.RJsonSerializer;
 
 namespace Wjire.RPC.DotNetty.Server
 {
     public class MessageHandler
     {
-        internal ISerializer Serializer = new JsonSerializer();
+        internal ISerializer Serializer = new RJsonSerializer();
         private IServiceProvider _serviceProvider;
         private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
 

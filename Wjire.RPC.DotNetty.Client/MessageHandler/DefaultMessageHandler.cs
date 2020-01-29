@@ -10,7 +10,7 @@ namespace Wjire.RPC.DotNetty.Client
     {
         private readonly ISerializer _serializer;
 
-        internal DefaultMessageHandler() : this(new JsonSerializer()) { }
+        internal DefaultMessageHandler() : this(new RJsonSerializer()) { }
 
         internal DefaultMessageHandler(ISerializer serializer)
         {

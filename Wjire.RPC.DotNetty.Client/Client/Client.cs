@@ -6,6 +6,7 @@ using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.ObjectPool;
 using Wjire.RPC.DotNetty.Client.ChannelPool;
+using Wjire.RPC.DotNetty.Common;
 using Wjire.RPC.DotNetty.Model;
 
 namespace Wjire.RPC.DotNetty.Client

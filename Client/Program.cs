@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using IServices;
@@ -19,7 +20,11 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             Test2(1000);
+            sw.Stop();
+            Console.WriteLine("耗时" + sw.ElapsedMilliseconds);
             Console.WriteLine("over");
             Console.ReadKey();
         }
@@ -50,6 +55,7 @@ namespace Client
         {
             Task[] tasks = new Task[count];
             var config = new ClientConfig("139.224.208.128", 7878)
+            //var config = new ClientConfig("127.0.0.1", 7878)
             {
                 AllIdleTimeSeconds = 10
             };

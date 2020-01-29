@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Wjire.RPC.DotNetty.Common
 {
-    public class JsonSerializer : ISerializer
+    public class RJsonSerializer : ISerializer
     {
         public object ToObject(object obj, Type type)
         {
