@@ -10,5 +10,7 @@ namespace Wjire.RPC.DotNetty.Client
         byte[] ToBytes(object obj);
 
         T ToObject<T>(IByteBuffer byteBuffer);
+
+        T ToObject<T>(byte[] bytes);
     }
 }

@@ -10,17 +10,16 @@ namespace Wjire.RPC.DotNetty.Client
     {
         protected readonly ConcurrentDictionary<string, ClientWaiter> Waiters = new ConcurrentDictionary<string, ClientWaiter>();
 
-        public void Set(IChannel channel, IByteBuffer byteBuffer)
-        {
-            string channelId = GetChannelId(channel);
-            Waiters.TryRemove(channelId, out ClientWaiter waiter);
-            waiter.Set(byteBuffer);
-            waiter.ByteBuffer.Retain();
-        }
-
         public virtual string GetChannelId(IChannel channel)
         {
             return channel.Id.AsLongText();
+        }
+
+        public virtual void Set(IChannel channel, byte[] bytes)
+        {
+            string channelId = GetChannelId(channel);
+            Waiters.TryRemove(channelId, out ClientWaiter waiter);
+            waiter.Set(bytes);
         }
 
         public abstract object GetResponse(IChannel channel, Type serviceType, Request request, TimeSpan timeOut);

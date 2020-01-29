@@ -7,7 +7,7 @@ namespace Wjire.RPC.DotNetty.Client
     internal class ClientWaiter : IDisposable
     {
         private readonly TimeSpan _timeOut;
-        internal IByteBuffer ByteBuffer { get; private set; }
+        internal byte[] Bytes { get; set; }
 
         private readonly ManualResetEventSlim _mutex = new ManualResetEventSlim();
 
@@ -22,9 +22,9 @@ namespace Wjire.RPC.DotNetty.Client
             _mutex.Wait(new CancellationTokenSource(_timeOut).Token);
         }
 
-        internal void Set(IByteBuffer byteBuffer)
+        internal void Set(byte[] bytes)
         {
-            ByteBuffer = byteBuffer;
+            Bytes = bytes;
             _mutex.Set();
         }
 

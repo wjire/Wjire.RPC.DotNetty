@@ -23,16 +23,16 @@ namespace Wjire.RPC.DotNetty.Client
             try
             {
                 Waiters[channelId] = messageWaiter;
-                channel.WriteAndFlushAsync(Unpooled.WrappedBuffer(_serializer.ToBytes(request)));
+                var buffer = Unpooled.WrappedBuffer(_serializer.ToBytes(request));
+                channel.WriteAndFlushAsync(buffer);
                 messageWaiter.Wait();
-                Response response = _serializer.ToObject<Response>(messageWaiter.ByteBuffer);
+                Response response = _serializer.ToObject<Response>(messageWaiter.Bytes);
                 if (response.Success == false)
                 {
                     throw new Exception(response.Message);
                 }
                 Type returnType = serviceType.GetMethod(request.MethodName).ReturnType;
                 object result = returnType == typeof(void) ? null : _serializer.ToObject(response.Data, returnType);
-                messageWaiter.ByteBuffer.Release();
                 return result;
             }
             catch (Exception)

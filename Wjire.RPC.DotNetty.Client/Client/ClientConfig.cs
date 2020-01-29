@@ -5,8 +5,8 @@ namespace Wjire.RPC.DotNetty.Client
 {
     public class ClientConfig
     {
-        public IPEndPoint RemoteAddress { get; }
-        public TimeSpan TimeOut { get; set; } = TimeSpan.FromSeconds(30);
+        internal IPEndPoint RemoteAddress { get; }
+        public TimeSpan TimeOut { get; set; } = TimeSpan.FromSeconds(5);
         public int AllIdleTimeSeconds { get; set; } = 60 * 5;
         public int PooledObjectMax { get; set; } = Environment.ProcessorCount * 2;
 

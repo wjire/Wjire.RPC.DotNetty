@@ -25,5 +25,11 @@ namespace Wjire.RPC.DotNetty.Client
             string json = byteBuffer.ToString(Encoding.UTF8);
             return JsonConvert.DeserializeObject<T>(json);
         }
+
+        public T ToObject<T>(byte[] bytes)
+        {
+            string json = Encoding.UTF8.GetString(bytes);
+            return JsonConvert.DeserializeObject<T>(json);
+        }
     }
 }

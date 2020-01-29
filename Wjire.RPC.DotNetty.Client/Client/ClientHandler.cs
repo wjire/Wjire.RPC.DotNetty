@@ -20,7 +20,9 @@ namespace Wjire.RPC.DotNetty.Client
 
         protected override void ChannelRead0(IChannelHandlerContext context, IByteBuffer message)
         {
-            _messageHandler.Set(context.Channel, message);
+            var bytes = new byte[message.ReadableBytes];
+            message.ReadBytes(bytes);
+            _messageHandler.Set(context.Channel, bytes);
         }
 
         public override void UserEventTriggered(IChannelHandlerContext context, object evt)
@@ -28,7 +30,7 @@ namespace Wjire.RPC.DotNetty.Client
             if (evt is IdleStateEvent)
             {
                 Console.WriteLine(_messageHandler.GetChannelId(context.Channel) + " 连接空闲太久,开始关闭");
-                context.WriteAndFlushAsync(Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes(HEARTBEAT))).ContinueWith(
+                context.WriteAndFlushAsync(Unpooled.UnreleasableBuffer(Unpooled.CopiedBuffer(Encoding.UTF8.GetBytes(HEARTBEAT)))).ContinueWith(
                     t =>
                     {
                         if (t.IsFaulted)

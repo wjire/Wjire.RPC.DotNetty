@@ -48,7 +48,7 @@ namespace Wjire.RPC.DotNetty.Client
                     Arguments = args,
                     ServiceName = _serviceType.FullName
                 };
-                while ((channel = GetChannel()).Open == false)
+                while ((channel = _channelPool.Get()).Open == false)
                 {
                 }
 
@@ -63,11 +63,6 @@ namespace Wjire.RPC.DotNetty.Client
             }
         }
 
-        private IChannel GetChannel()
-        {
-            return _channelPool.Get();
-        }
-
 
         private Bootstrap InitBootstrap(out IEventLoopGroup group)
         {
@@ -76,11 +71,14 @@ namespace Wjire.RPC.DotNetty.Client
             Bootstrap bootstrap = new Bootstrap()
                 .Group(group)
                 .Channel<TcpSocketChannel>()
-                .Option(ChannelOption.TcpNodelay, true)
+                .Option(ChannelOption.SoBacklog, 1024)
+                .Option(ChannelOption.SoSndbuf, 32 * 1024)
+                .Option(ChannelOption.SoRcvbuf, 32 * 1024)
+                .Option(ChannelOption.SoReuseaddr, true)
                 .Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
                 {
                     IChannelPipeline pipeline = channel.Pipeline;
-                    pipeline.AddLast(new IdleStateHandler(0, 0, _config.AllIdleTimeSeconds));
+                    //pipeline.AddLast(new IdleStateHandler(0, 0, _config.AllIdleTimeSeconds));
                     pipeline.AddLast(handler);
                 }));
             return bootstrap;

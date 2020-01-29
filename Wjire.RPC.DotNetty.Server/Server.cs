@@ -30,6 +30,10 @@ namespace Wjire.RPC.DotNetty.Server
                 _bootstrap = new ServerBootstrap()
                     .Group(_acceptor, _client)
                     .Channel<TcpServerSocketChannel>()
+                    .Option(ChannelOption.SoBacklog, 1024)
+                    .Option(ChannelOption.SoSndbuf, 32 * 1024)
+                    .Option(ChannelOption.SoRcvbuf, 32 * 1024)
+                    .Option(ChannelOption.SoReuseaddr, true)
                     .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                     {
                         IChannelPipeline pipeline = channel.Pipeline;

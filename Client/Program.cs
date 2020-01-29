@@ -19,7 +19,7 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-            Test2(1111);
+            Test2(11111);
             Console.WriteLine("over");
             Console.ReadKey();
         }
@@ -49,19 +49,42 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
-            ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
+            var config = new ClientConfig("127.0.0.1", 7878)
+            {
+                AllIdleTimeSeconds = 10
+            };
+            ITest client = ClientFactory.GetClient<ITest>(config);
             for (int i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = Task.Run(() =>
                 {
-                    //Console.Write(client.GetPerson(Interlocked.Increment(ref num)).Id + ",");
                     Person person = client.GetPerson(Interlocked.Increment(ref num));
                     Console.WriteLine(JsonConvert.SerializeObject(person));
                 });
-                //Thread.Sleep(100);
             }
-
             Task.WaitAll(tasks);
+        }
+
+
+        private static void Test3(int count)
+        {
+            ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
+            for (int i = 0; i < count; i++)
+            {
+                var id = Interlocked.Increment(ref num);
+                Person person = client.GetPerson(id);
+                Console.WriteLine(id + ":" + JsonConvert.SerializeObject(person));
+            }
+        }
+
+        private static void Test4(int count)
+        {
+            ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
+            for (int i = 0; i < count; i++)
+            {
+                var res = client.Get("wjire");
+                Console.WriteLine(i + ":" + res);
+            }
         }
     }
 }
