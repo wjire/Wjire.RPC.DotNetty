@@ -19,7 +19,7 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-            Test2(11111);
+            Test2(1000);
             Console.WriteLine("over");
             Console.ReadKey();
         }
@@ -49,7 +49,7 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
-            var config = new ClientConfig("127.0.0.1", 7878)
+            var config = new ClientConfig("139.224.208.128", 7878)
             {
                 AllIdleTimeSeconds = 10
             };
