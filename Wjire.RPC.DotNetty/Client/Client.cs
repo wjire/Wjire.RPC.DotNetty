@@ -71,7 +71,6 @@ namespace Wjire.RPC.DotNetty.Client
             Bootstrap bootstrap = new Bootstrap()
                 .Group(group)
                 .Channel<TcpSocketChannel>()
-                .Option(ChannelOption.SoBacklog, 1024)
                 .Option(ChannelOption.SoSndbuf, 32 * 1024)
                 .Option(ChannelOption.SoRcvbuf, 32 * 1024)
                 .Option(ChannelOption.SoReuseaddr, true)
