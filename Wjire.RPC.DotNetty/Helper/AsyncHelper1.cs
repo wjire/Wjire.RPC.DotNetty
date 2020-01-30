@@ -2,8 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Coldairarrow.Util
+namespace Wjire.RPC.DotNetty.Helper
 {
+    /*
+     * 线程多了要卡住.
+     */
+
     /// <summary>
     /// 异步转同步,防止ASP.NET中死锁
     /// https://cpratt.co/async-tips-tricks/

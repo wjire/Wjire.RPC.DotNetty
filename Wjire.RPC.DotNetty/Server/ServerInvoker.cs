@@ -35,7 +35,7 @@ namespace Wjire.RPC.DotNetty.Server
         {
             try
             {
-                Request request = _serializer.ToObject<Request>(requestBytes);
+                RpcRequest request = _serializer.ToObject<RpcRequest>(requestBytes);
                 if (_servicesMap.TryGetValue(request.ServiceName, out Type serviceType) == false)
                 {
                     throw new ArgumentException($"not find the service : {request.ServiceName}");
@@ -49,7 +49,7 @@ namespace Wjire.RPC.DotNetty.Server
                 CheckArguments(request.Arguments, methodInfo.GetParameters());
                 object service = _serviceProvider.GetService(serviceType);
                 object result = methodInfo.Invoke(service, request.Arguments);
-                return _serializer.ToBytes(new Response
+                return _serializer.ToBytes(new RpcResponse
                 {
                     Data = result,
                     Success = true
@@ -57,7 +57,7 @@ namespace Wjire.RPC.DotNetty.Server
             }
             catch (Exception ex)
             {
-                return _serializer.ToBytes(new Response
+                return _serializer.ToBytes(new RpcResponse
                 {
                     Message = ex.ToString(),
                 });

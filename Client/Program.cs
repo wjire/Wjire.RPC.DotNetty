@@ -70,7 +70,7 @@ namespace Client
                 tasks[i] = Task.Run(() =>
                 {
                     Person person = client.GetPerson(Interlocked.Increment(ref num));
-                    Console.WriteLine(JsonConvert.SerializeObject(person));
+                    //Console.WriteLine(JsonConvert.SerializeObject(person));
                 });
             }
             Task.WaitAll(tasks);

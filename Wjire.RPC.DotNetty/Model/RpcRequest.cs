@@ -3,7 +3,7 @@
 namespace Wjire.RPC.DotNetty.Model
 {
     [MessagePackObject]
-    public class Request
+    public class RpcRequest
     {
         [Key(0)]
         public string ServiceName { get; set; }

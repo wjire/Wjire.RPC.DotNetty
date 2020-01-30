@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Dynamic;
 using System.Net;
-using Coldairarrow.Util;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.ObjectPool;
+using Wjire.RPC.DotNetty.Helper;
 using Wjire.RPC.DotNetty.Model;
 
 namespace Wjire.RPC.DotNetty.Client
@@ -15,8 +15,7 @@ namespace Wjire.RPC.DotNetty.Client
         private readonly Type _serviceType;
         private readonly ClientConfig _config;
         private readonly Bootstrap _bootstrap;
-        private readonly ObjectPool<IChannel> _channelPool;
-        private readonly ClientInvoker _clientInvoker = new ClientInvoker();
+        private readonly ClientInvoker _clientInvoker;
 
         public Client(Type serviceType, ClientConfig config)
         {
@@ -27,7 +26,8 @@ namespace Wjire.RPC.DotNetty.Client
             {
                 Console.WriteLine("ctor Client");
                 _bootstrap = InitBootstrap(out group);
-                _channelPool = InitChannelPool();
+                var channelPool = InitChannelPool();
+                _clientInvoker = new ClientInvoker(channelPool);
             }
             catch (Exception)
             {
@@ -39,28 +39,14 @@ namespace Wjire.RPC.DotNetty.Client
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            IChannel channel = null;
-            try
+            RpcRequest request = new RpcRequest
             {
-                Request request = new Request
-                {
-                    MethodName = binder.Name,
-                    Arguments = args,
-                    ServiceName = _serviceType.FullName
-                };
-                while ((channel = _channelPool.Get()).Open == false)
-                {
-                }
-
-                result = _clientInvoker.GetResponse(channel, _serviceType, request, _config.TimeOut);
-                _channelPool.Return(channel);
-                return true;
-            }
-            catch (OperationCanceledException)
-            {
-                channel?.CloseAsync();
-                throw;
-            }
+                MethodName = binder.Name,
+                Arguments = args,
+                ServiceName = _serviceType.FullName
+            };
+            result = _clientInvoker.GetResponse(_serviceType, request, _config.TimeOut);
+            return true;
         }
 
 
@@ -105,8 +91,8 @@ namespace Wjire.RPC.DotNetty.Client
 
             public IChannel Create()
             {
-                return AsyncHelper1.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
-                //return AsyncHelper2.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
+                //return AsyncHelper1.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
+                return AsyncHelper2.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
             }
 
             public bool Return(IChannel obj)

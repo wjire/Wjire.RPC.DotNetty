@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using Microsoft.Extensions.ObjectPool;
 using Wjire.RPC.DotNetty.Model;
 using Wjire.RPC.DotNetty.Serializer;
 
@@ -11,32 +12,22 @@ namespace Wjire.RPC.DotNetty.Client
     internal class ClientInvoker
     {
         private readonly ISerializer _serializer;
-
+        private readonly ObjectPool<IChannel> _channelPool;
         private readonly ConcurrentDictionary<string, ClientWaiter> _waiters = new ConcurrentDictionary<string, ClientWaiter>();
 
-        internal ClientInvoker() : this(RpcConfig.DefaultSerializer) { }
+        internal ClientInvoker(ObjectPool<IChannel> channelPool) : this(channelPool, RpcConfig.DefaultSerializer) { }
 
-        internal ClientInvoker(ISerializer serializer)
+        internal ClientInvoker(ObjectPool<IChannel> channelPool, ISerializer serializer)
         {
+            _channelPool = channelPool;
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
 
-        internal string GetChannelId(IChannel channel)
+        internal object GetResponse(Type serviceType, RpcRequest request, TimeSpan timeOut)
         {
-            return channel.Id.AsLongText();
-        }
-
-        internal void Set(IChannel channel, byte[] bytes)
-        {
-            string channelId = GetChannelId(channel);
-            _waiters.TryRemove(channelId, out ClientWaiter waiter);
-            waiter.Set(bytes);
-        }
-
-
-        internal object GetResponse(IChannel channel, Type serviceType, Request request, TimeSpan timeOut)
-        {
+            IChannel channel = null;
+            while ((channel = _channelPool.Get()).Open == false) { }
             string channelId = GetChannelId(channel);
             ClientWaiter messageWaiter = new ClientWaiter(timeOut);
             try
@@ -45,7 +36,8 @@ namespace Wjire.RPC.DotNetty.Client
                 IByteBuffer buffer = Unpooled.WrappedBuffer(_serializer.ToBytes(request));
                 channel.WriteAndFlushAsync(buffer);
                 messageWaiter.Wait();
-                Response response = _serializer.ToObject<Response>(messageWaiter.Bytes);
+                _channelPool.Return(channel);
+                RpcResponse response = _serializer.ToObject<RpcResponse>(messageWaiter.Bytes);
                 if (response.Success == false)
                 {
                     throw new Exception(response.Message);
@@ -53,6 +45,11 @@ namespace Wjire.RPC.DotNetty.Client
                 Type returnType = serviceType.GetMethod(request.MethodName).ReturnType;
                 object result = returnType == typeof(void) ? null : _serializer.ToObject(response.Data, returnType);
                 return result;
+            }
+            catch (OperationCanceledException)
+            {
+                channel?.CloseAsync();
+                throw;
             }
             catch (Exception)
             {
@@ -65,6 +62,17 @@ namespace Wjire.RPC.DotNetty.Client
             }
         }
 
+        private string GetChannelId(IChannel channel)
+        {
+            return channel.Id.AsLongText();
+        }
+
+        internal void Set(IChannel channel, byte[] bytes)
+        {
+            string channelId = GetChannelId(channel);
+            _waiters.TryRemove(channelId, out ClientWaiter waiter);
+            waiter.Set(bytes);
+        }
 
         private class ClientWaiter : IDisposable
         {

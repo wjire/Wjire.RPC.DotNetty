@@ -4,7 +4,7 @@ using MessagePack;
 namespace Wjire.RPC.DotNetty.Model
 {
     [MessagePackObject]
-    public class Response
+    public class RpcResponse
     {
         [Key(0)]
         public bool Success { get; set; }
