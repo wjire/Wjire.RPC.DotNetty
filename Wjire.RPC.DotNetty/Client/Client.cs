@@ -14,7 +14,6 @@ namespace Wjire.RPC.DotNetty.Client
     {
         private readonly Type _serviceType;
         private readonly ClientConfig _config;
-        private readonly Bootstrap _bootstrap;
         private readonly ClientInvoker _clientInvoker;
 
         public Client(Type serviceType, ClientConfig config)
@@ -25,8 +24,8 @@ namespace Wjire.RPC.DotNetty.Client
             try
             {
                 Console.WriteLine("ctor Client");
-                _bootstrap = InitBootstrap(out group);
-                var channelPool = InitChannelPool();
+                var bootstrap = InitBootstrap(out group);
+                var channelPool = InitChannelPool(bootstrap);
                 _clientInvoker = new ClientInvoker(channelPool);
             }
             catch (Exception)
@@ -70,9 +69,9 @@ namespace Wjire.RPC.DotNetty.Client
         }
 
 
-        private ObjectPool<IChannel> InitChannelPool()
+        private ObjectPool<IChannel> InitChannelPool(Bootstrap bootstrap)
         {
-            ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(_bootstrap, _config.RemoteAddress);
+            ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(bootstrap, _config.RemoteAddress);
             DefaultObjectPool<IChannel> pool = new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
             return pool;
         }
