@@ -14,7 +14,7 @@ namespace Server
             services.AddSingleton<ITest, Test>();
             services.AddSingleton<IFoo, Foo>();
             server.RegisterServices(services);
-            //server.RegisterSerializer(new RMessagePackSerializer());
+            server.RegisterSerializer(new RMessagePackSerializer());
             server.Start().Wait();
         }
     }

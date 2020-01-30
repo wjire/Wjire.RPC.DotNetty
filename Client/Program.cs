@@ -22,7 +22,7 @@ namespace Client
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Test2(1000);
+            Test2(1);
             sw.Stop();
             Console.WriteLine("耗时" + sw.ElapsedMilliseconds);
             Console.WriteLine("over");
@@ -40,7 +40,7 @@ namespace Client
                         //Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(client.GetPerson(Interlocked.Increment(ref num)))+"\r\n");
                         Person person = client.GetPerson(Interlocked.Increment(ref num));
                         Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(person));
-                    })
+                    }) 
                 { IsBackground = true };
             }
 
@@ -54,8 +54,8 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
-            var config = new ClientConfig("139.224.208.128", 7878)
-            //var config = new ClientConfig("127.0.0.1", 7878)
+            //var config = new ClientConfig("139.224.208.128", 7878)
+            var config = new ClientConfig("127.0.0.1", 7878)
             {
                 AllIdleTimeSeconds = 10
             };

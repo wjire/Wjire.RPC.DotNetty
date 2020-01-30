@@ -17,12 +17,12 @@ namespace Wjire.RPC.DotNetty.Client
         private readonly ClientConfig _config;
         private readonly Bootstrap _bootstrap;
         private readonly ObjectPool<IChannel> _channelPool;
-        private readonly IMessageHandler _messageHandler = new DefaultMessageHandler(); 
+        private readonly IMessageHandler _messageHandler = new DefaultMessageHandler(new RMessagePackSerializer());
 
         public Client(Type serviceType, ClientConfig config)
         {
             _serviceType = serviceType;
-             _config = config;
+            _config = config;
             IEventLoopGroup group = null;
             try
             {

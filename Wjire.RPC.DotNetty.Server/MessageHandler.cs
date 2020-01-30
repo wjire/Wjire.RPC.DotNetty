@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Wjire.RPC.DotNetty.Common;
 using Wjire.RPC.DotNetty.Model;
-using RJsonSerializer = Wjire.RPC.DotNetty.Common.RJsonSerializer;
 
 namespace Wjire.RPC.DotNetty.Server
 {
