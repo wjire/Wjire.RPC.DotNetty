@@ -20,12 +20,12 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-            var count = 10000;
-            for (int i = 0; i < 10; i++)
+            var count = 1000;
+            for (int i = 0; i < 1; i++)
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Test3(count);
+                Test2(count);
                 sw.Stop();
                 Console.WriteLine($"运行{count}次,每次耗时:" + (double)sw.ElapsedMilliseconds / count + " ms");
             }

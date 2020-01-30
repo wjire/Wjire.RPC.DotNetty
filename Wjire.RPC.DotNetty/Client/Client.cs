@@ -14,7 +14,7 @@ namespace Wjire.RPC.DotNetty.Client
     {
         private readonly Type _serviceType;
         private readonly ClientConfig _config;
-        private readonly ClientInvoker _clientInvoker;
+        private readonly ClientInvoker _clientInvoker = new ClientInvoker();
 
         public Client(Type serviceType, ClientConfig config)
         {
@@ -25,8 +25,7 @@ namespace Wjire.RPC.DotNetty.Client
             {
                 Console.WriteLine("ctor Client");
                 var bootstrap = InitBootstrap(out group);
-                var channelPool = InitChannelPool(bootstrap);
-                _clientInvoker = new ClientInvoker(channelPool);
+                _clientInvoker.ChannelPool = InitChannelPool(bootstrap);
             }
             catch (Exception)
             {
