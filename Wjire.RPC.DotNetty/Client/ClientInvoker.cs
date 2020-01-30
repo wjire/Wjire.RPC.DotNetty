@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Wjire.RPC.DotNetty.Model;
@@ -11,7 +12,7 @@ namespace Wjire.RPC.DotNetty.Client
     {
         private readonly ISerializer _serializer;
 
-        protected readonly ConcurrentDictionary<string, ClientWaiter> Waiters = new ConcurrentDictionary<string, ClientWaiter>();
+        private readonly ConcurrentDictionary<string, ClientWaiter> _waiters = new ConcurrentDictionary<string, ClientWaiter>();
 
         internal ClientInvoker() : this(RpcConfig.DefaultSerializer) { }
 
@@ -21,26 +22,26 @@ namespace Wjire.RPC.DotNetty.Client
         }
 
 
-        public string GetChannelId(IChannel channel)
+        internal string GetChannelId(IChannel channel)
         {
             return channel.Id.AsLongText();
         }
 
-        public void Set(IChannel channel, byte[] bytes)
+        internal void Set(IChannel channel, byte[] bytes)
         {
             string channelId = GetChannelId(channel);
-            Waiters.TryRemove(channelId, out ClientWaiter waiter);
+            _waiters.TryRemove(channelId, out ClientWaiter waiter);
             waiter.Set(bytes);
         }
 
 
-        public object GetResponse(IChannel channel, Type serviceType, Request request, TimeSpan timeOut)
+        internal object GetResponse(IChannel channel, Type serviceType, Request request, TimeSpan timeOut)
         {
             string channelId = GetChannelId(channel);
             ClientWaiter messageWaiter = new ClientWaiter(timeOut);
             try
             {
-                Waiters[channelId] = messageWaiter;
+                _waiters[channelId] = messageWaiter;
                 IByteBuffer buffer = Unpooled.WrappedBuffer(_serializer.ToBytes(request));
                 channel.WriteAndFlushAsync(buffer);
                 messageWaiter.Wait();
@@ -55,12 +56,43 @@ namespace Wjire.RPC.DotNetty.Client
             }
             catch (Exception)
             {
-                Waiters.TryRemove(channelId, out ClientWaiter value);
+                _waiters.TryRemove(channelId, out ClientWaiter value);
                 throw;
             }
             finally
             {
                 messageWaiter.Dispose();
+            }
+        }
+
+
+        private class ClientWaiter : IDisposable
+        {
+            private readonly TimeSpan _timeOut;
+            internal byte[] Bytes { get; set; }
+
+            private readonly ManualResetEventSlim _mutex = new ManualResetEventSlim();
+
+
+            internal ClientWaiter(TimeSpan timeOut)
+            {
+                _timeOut = timeOut;
+            }
+
+            internal void Wait()
+            {
+                _mutex.Wait(new CancellationTokenSource(_timeOut).Token);
+            }
+
+            internal void Set(byte[] bytes)
+            {
+                Bytes = bytes;
+                _mutex.Set();
+            }
+
+            public void Dispose()
+            {
+                _mutex?.Dispose();
             }
         }
     }

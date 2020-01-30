@@ -4,7 +4,6 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.DependencyInjection;
-using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty.Server
 {
@@ -65,7 +64,7 @@ namespace Wjire.RPC.DotNetty.Server
                 Console.WriteLine($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
                 do
                 {
-                    var input = Console.ReadLine();
+                    string input = Console.ReadLine();
                     if (input?.Equals("q", StringComparison.OrdinalIgnoreCase) == true)
                     {
                         break;

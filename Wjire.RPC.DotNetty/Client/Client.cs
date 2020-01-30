@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Dynamic;
+using System.Net;
+using Coldairarrow.Util;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.ObjectPool;
-using Wjire.RPC.DotNetty.Client.ChannelPool;
 using Wjire.RPC.DotNetty.Model;
-using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty.Client
 {
@@ -90,6 +90,30 @@ namespace Wjire.RPC.DotNetty.Client
             ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(_bootstrap, _config.RemoteAddress);
             DefaultObjectPool<IChannel> pool = new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
             return pool;
+        }
+
+
+        private class ChannelPooledObjectPolicy : IPooledObjectPolicy<IChannel>
+        {
+            private readonly Bootstrap _bootstrap;
+            private readonly IPEndPoint _remoteAddress;
+
+            public ChannelPooledObjectPolicy(Bootstrap bootstrap, IPEndPoint remoteAddress)
+            {
+                _bootstrap = bootstrap;
+                _remoteAddress = remoteAddress;
+            }
+
+            public IChannel Create()
+            {
+                return AsyncHelper1.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
+                //return AsyncHelper2.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
+            }
+
+            public bool Return(IChannel obj)
+            {
+                return true;
+            }
         }
     }
 }

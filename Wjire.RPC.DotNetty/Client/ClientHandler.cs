@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text;
 using DotNetty.Buffers;
-using DotNetty.Handlers.Timeout;
 using DotNetty.Transport.Channels;
 
 namespace Wjire.RPC.DotNetty.Client

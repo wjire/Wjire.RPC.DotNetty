@@ -20,11 +20,16 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            Test2(1);
-            sw.Stop();
-            Console.WriteLine("耗时" + sw.ElapsedMilliseconds);
+            var count = 10000;
+            for (int i = 0; i < 10; i++)
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Test3(count);
+                sw.Stop();
+                Console.WriteLine($"运行{count}次,每次耗时:" + (double)sw.ElapsedMilliseconds / count + " ms");
+            }
+
             Console.WriteLine("over");
             Console.ReadKey();
         }
@@ -55,7 +60,7 @@ namespace Client
         {
             Task[] tasks = new Task[count];
             //var config = new ClientConfig("139.224.208.128", 7878)
-            var config = new ClientConfig("127.0.0.1", 7878)
+            ClientConfig config = new ClientConfig("127.0.0.1", 7878)
             {
                 AllIdleTimeSeconds = 10
             };
@@ -74,12 +79,17 @@ namespace Client
 
         private static void Test3(int count)
         {
+            //ITest client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
             ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             for (int i = 0; i < count; i++)
             {
-                int id = Interlocked.Increment(ref num);
-                Person person = client.GetPerson(id);
-                Console.WriteLine(id + ":" + JsonConvert.SerializeObject(person));
+                //int id = Interlocked.Increment(ref num);
+                //Stopwatch sw = new Stopwatch();
+                //sw.Start();
+                Person person = client.GetPerson(i);
+                //sw.Stop();
+                //Console.WriteLine("耗时" + sw.ElapsedMilliseconds);
+                //Console.WriteLine(id + ":" + JsonConvert.SerializeObject(person));
             }
         }
 

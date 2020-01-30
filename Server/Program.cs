@@ -1,7 +1,6 @@
 ﻿using IServices;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
-using Wjire.RPC.DotNetty.Serializer;
 
 namespace Server
 {

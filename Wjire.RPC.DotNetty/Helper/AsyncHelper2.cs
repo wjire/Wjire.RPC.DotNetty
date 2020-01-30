@@ -8,7 +8,7 @@ namespace Wjire.RPC.DotNetty.Helper
     /// <summary>
     /// https://stackoverflow.com/questions/5095183/how-would-i-run-an-async-taskt-method-synchronously
     /// </summary>
-    internal static class AsyncHelpers
+    internal static class AsyncHelper2
     {
 
         /// <summary>
