@@ -4,6 +4,6 @@ namespace Wjire.RPC.DotNetty
 {
     internal static class RpcConfig
     {
-        internal static ISerializer DefaultSerializer { get; set; } = new RJsonSerializer();
+        internal static ISerializer DefaultSerializer = new RJsonSerializer();
     }
 }

@@ -21,7 +21,7 @@ namespace Wjire.RPC.DotNetty.Server
             try
             {
                 _port = port;
-                Console.WriteLine($"{DateTime.Now} 开始创建服务!");
+                Console.WriteLine($"{DateTime.Now} 开始启动服务!");
                 ServerHandler handler = new ServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
@@ -62,8 +62,15 @@ namespace Wjire.RPC.DotNetty.Server
             try
             {
                 channel = await _bootstrap.BindAsync(_port);
-                Console.WriteLine($"{DateTime.Now} 服务已启动,端口号 : {_port},按任意键退出");
-                Console.ReadLine();
+                Console.WriteLine($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
+                do
+                {
+                    var input = Console.ReadLine();
+                    if (input?.Equals("q", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        break;
+                    }
+                } while (true);
                 Console.WriteLine($"{DateTime.Now} 正在关闭服务,请耐心等待");
             }
             finally
