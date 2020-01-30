@@ -40,7 +40,7 @@ namespace Client
                         //Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(client.GetPerson(Interlocked.Increment(ref num)))+"\r\n");
                         Person person = client.GetPerson(Interlocked.Increment(ref num));
                         Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(person));
-                    }) 
+                    })
                 { IsBackground = true };
             }
 
@@ -77,7 +77,7 @@ namespace Client
             ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             for (int i = 0; i < count; i++)
             {
-                var id = Interlocked.Increment(ref num);
+                int id = Interlocked.Increment(ref num);
                 Person person = client.GetPerson(id);
                 Console.WriteLine(id + ":" + JsonConvert.SerializeObject(person));
             }
@@ -88,7 +88,7 @@ namespace Client
             ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             for (int i = 0; i < count; i++)
             {
-                var res = client.Get("wjire");
+                string res = client.Get("wjire");
                 Console.WriteLine(i + ":" + res);
             }
         }
