@@ -1,7 +1,15 @@
 在前辈的基础上做的修改和优化,前辈的代码在这里 : https://github.com/Coldairarrow/DotNettyRPC
-    
-示例:
 
+框    架:   .NET Standard 2.0
+通    信:   DotNetty.Handlers,DotNetty.Transport
+动态代理:   ImpromptuInterface
+序 列 化:   Newtonsort.Json,MessagePack
+连 接 池:   Microsoft.Extensions.ObjectPool
+依赖注入:   Microsoft.Extensions.DependencyInjection
+日志记录:   Wjire.Log (自制)    
+
+
+示例:
 服务端
      Server server = new Server(7878);
      
@@ -18,10 +26,8 @@
      Person person = client.GetPerson(1);
 
 PS:
-    1.服务端需要引用服务契约,服务实现,实体.比如示例中的 ITest,Test,Person 所对应的类库;
-    2.客户端需要引用服务契约,实体;
-    3.客户端链接已做单例,长连接,对象池.
-    4.默认序列化方式为 Json,内置了另外一种: MessagePack
+    1.客户端链接已做单例,长连接,对象池.
+    2.默认序列化方式为 Json,内置了另外一种: MessagePack
 
 
 本机测试:
