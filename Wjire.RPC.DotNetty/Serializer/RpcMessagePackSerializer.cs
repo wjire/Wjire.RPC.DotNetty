@@ -3,7 +3,7 @@ using MessagePack;
 
 namespace Wjire.RPC.DotNetty.Serializer
 {
-    public class RMessagePackSerializer : ISerializer
+    public class RpcMessagePackSerializer : IRpcSerializer
     {
         public object ToObject(object obj, Type type)
         {

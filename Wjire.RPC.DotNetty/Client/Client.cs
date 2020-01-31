@@ -6,6 +6,7 @@ using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.ObjectPool;
 using Wjire.RPC.DotNetty.Helper;
+using Wjire.RPC.DotNetty.Log;
 using Wjire.RPC.DotNetty.Model;
 
 namespace Wjire.RPC.DotNetty.Client
@@ -24,11 +25,12 @@ namespace Wjire.RPC.DotNetty.Client
             try
             {
                 Console.WriteLine("ctor Client");
-                var bootstrap = InitBootstrap(out group);
+                Bootstrap bootstrap = InitBootstrap(out group);
                 _clientInvoker.ChannelPool = InitChannelPool(bootstrap);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                RpcLogService.WriteLog(ex, "Client ctor");
                 group?.ShutdownGracefullyAsync().Wait();
                 throw;
             }

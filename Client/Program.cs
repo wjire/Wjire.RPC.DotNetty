@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IServices;
 using Newtonsoft.Json;
+using Wjire.RPC.DotNetty;
 using Wjire.RPC.DotNetty.Client;
 
 namespace Client
@@ -19,8 +20,8 @@ namespace Client
             //Person testResult = test.GetPerson(1);
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
-
-            var count = 1000;
+            RpcLogService.UseConsoleLog();
+            int count = 1000;
             for (int i = 0; i < 1; i++)
             {
                 Stopwatch sw = new Stopwatch();

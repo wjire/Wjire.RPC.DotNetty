@@ -2,7 +2,7 @@
 
 namespace Wjire.RPC.DotNetty.Serializer
 {
-    public interface ISerializer
+    public interface IRpcSerializer
     {
         object ToObject(object obj, Type type);
 

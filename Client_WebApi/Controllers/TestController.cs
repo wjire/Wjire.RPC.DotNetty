@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using IServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Wjire.RPC.DotNetty.Client;
 
 namespace Client_WebApi.Controllers
@@ -18,7 +13,7 @@ namespace Client_WebApi.Controllers
         private static int num;
         public string Get()
         {
-            var count = 1000;
+            int count = 1000;
             Task[] tasks = new Task[count];
             ClientConfig config = new ClientConfig("127.0.0.1", 7878)
             {

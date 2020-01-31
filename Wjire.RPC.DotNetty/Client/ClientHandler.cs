@@ -1,6 +1,7 @@
 ﻿using System;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using Wjire.RPC.DotNetty.Log;
 
 namespace Wjire.RPC.DotNetty.Client
 {
@@ -46,7 +47,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         public override void ExceptionCaught(IChannelHandlerContext context, Exception exception)
         {
-            Console.WriteLine("ClientHandler throw Exception: " + exception);
+            RpcLogService.WriteLog(exception, "ClientHandler throw Exception");
             context.CloseAsync();
         }
     }

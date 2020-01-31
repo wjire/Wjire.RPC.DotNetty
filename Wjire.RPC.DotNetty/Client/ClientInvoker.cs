@@ -4,6 +4,7 @@ using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.ObjectPool;
+using Wjire.RPC.DotNetty.Log;
 using Wjire.RPC.DotNetty.Model;
 using Wjire.RPC.DotNetty.Serializer;
 
@@ -11,13 +12,13 @@ namespace Wjire.RPC.DotNetty.Client
 {
     internal class ClientInvoker
     {
-        private readonly ISerializer _serializer;
+        private readonly IRpcSerializer _serializer;
         internal ObjectPool<IChannel> ChannelPool { get; set; }
         private readonly ConcurrentDictionary<string, ClientWaiter> _waiters = new ConcurrentDictionary<string, ClientWaiter>();
 
         internal ClientInvoker() : this(RpcConfig.DefaultSerializer) { }
 
-        internal ClientInvoker(ISerializer serializer)
+        internal ClientInvoker(IRpcSerializer serializer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
@@ -29,6 +30,7 @@ namespace Wjire.RPC.DotNetty.Client
             while ((channel = ChannelPool.Get()).Open == false) { }
             string channelId = GetChannelId(channel);
             ClientWaiter messageWaiter = new ClientWaiter(timeOut);
+            RpcResponse response = null;
             try
             {
                 _waiters[channelId] = messageWaiter;
@@ -36,7 +38,7 @@ namespace Wjire.RPC.DotNetty.Client
                 channel.WriteAndFlushAsync(buffer);
                 messageWaiter.Wait();
                 ChannelPool.Return(channel);
-                RpcResponse response = _serializer.ToObject<RpcResponse>(messageWaiter.Bytes);
+                response = _serializer.ToObject<RpcResponse>(messageWaiter.Bytes);
                 if (response.Success == false)
                 {
                     throw new Exception(response.Message);
@@ -45,14 +47,16 @@ namespace Wjire.RPC.DotNetty.Client
                 object result = returnType == typeof(void) ? null : _serializer.ToObject(response.Data, returnType);
                 return result;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException ex)
             {
                 channel?.CloseAsync();
+                RpcLogService.WriteLog(ex, "服务器响应超时", request, response);
                 throw;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _waiters.TryRemove(channelId, out ClientWaiter value);
+                RpcLogService.WriteLog(ex, nameof(GetResponse), request, response);
                 throw;
             }
             finally

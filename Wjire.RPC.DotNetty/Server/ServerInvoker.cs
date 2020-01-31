@@ -9,13 +9,13 @@ namespace Wjire.RPC.DotNetty.Server
 {
     internal class ServerInvoker
     {
-        private readonly ISerializer _serializer;
+        private readonly IRpcSerializer _serializer;
         private IServiceProvider _serviceProvider;
         private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
 
         internal ServerInvoker() : this(RpcConfig.DefaultSerializer) { }
 
-        internal ServerInvoker(ISerializer serializer)
+        internal ServerInvoker(IRpcSerializer serializer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
