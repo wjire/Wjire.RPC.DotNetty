@@ -1,7 +1,7 @@
 在前辈的基础上做的修改和优化,前辈的代码在这里 : https://github.com/Coldairarrow/DotNettyRPC
 
 框    架:   .NET Standard 2.0
-通    信:   DotNetty.Handlers,DotNetty.Transport
+通    信:   DotNetty
 动态代理:   ImpromptuInterface
 序 列 化:   Newtonsort.Json,MessagePack
 连 接 池:   Microsoft.Extensions.ObjectPool
