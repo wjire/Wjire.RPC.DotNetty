@@ -58,12 +58,10 @@
 
 
 服务端
+
      Server server = new Server(7878);
-     
-     //.net core 自带的DI容器
      ServiceCollection services = new ServiceCollection();
      services.AddSingleton<ITest, Test>();
-
      server.RegisterServices(services);
      server.Start().Wait();
 
@@ -73,5 +71,7 @@
      Person person = client.GetPerson(1);//内部实现为长连接+对象池.
 
 本机测试:
+
     1.Task.Run() 10000 次,平均每次耗时 0.12 ms;
+
     2.单线程运行 10000 次,平均每次耗时 0.28 ms.
