@@ -2,7 +2,7 @@
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 
-namespace Wjire.RPC.DotNetty.Server
+namespace Wjire.RPC.DotNetty
 {
 
     internal class ServerHandler : SimpleChannelInboundHandler<IByteBuffer>

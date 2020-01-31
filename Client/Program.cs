@@ -21,7 +21,7 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
             RpcLogService.UseConsoleLog();
-            int count = 10000;
+            int count = 1000;
             for (int i = 0; i < 10; i++)
             {
                 Stopwatch sw = new Stopwatch();
@@ -60,7 +60,6 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
-            //var config = new ClientConfig("139.224.208.128", 7878)
             ClientConfig config = new ClientConfig("127.0.0.1", 7878)
             {
                 AllIdleTimeSeconds = 10
@@ -68,19 +67,17 @@ namespace Client
             ITest client = ClientFactory.GetClient<ITest>(config);
             for (int i = 0; i < tasks.Length; i++)
             {
-                tasks[i] = Task.Run(() =>
-                {
-                    Person person = client.GetPerson(Interlocked.Increment(ref num));
-                    Console.WriteLine(JsonConvert.SerializeObject(person));
-                });
+                //tasks[i] = Task.Run(() =>
+                //{
+                Person person = client.GetPerson(1);
+                //});
             }
-            Task.WaitAll(tasks);
+            //Task.WaitAll(tasks);
         }
 
 
         private static void Test3(int count)
         {
-            //ITest client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
             ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             for (int i = 0; i < count; i++)
             {

@@ -5,7 +5,7 @@ namespace Wjire.RPC.DotNetty
 {
     public static class RpcLogService
     {
-        private static ILogHandler _logHandler = RpcConfig.DefaultLogHandler;
+        private static ILogHandler _logHandler = new TextHandler();
 
         public static void WriteLog(Exception ex, string remark, object request = null, object response = null, string path = null)
         {

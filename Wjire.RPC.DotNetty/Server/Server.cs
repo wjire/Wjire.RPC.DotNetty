@@ -4,9 +4,8 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.DependencyInjection;
-using Wjire.RPC.DotNetty.Log;
 
-namespace Wjire.RPC.DotNetty.Server
+namespace Wjire.RPC.DotNetty
 {
     public class Server
     {

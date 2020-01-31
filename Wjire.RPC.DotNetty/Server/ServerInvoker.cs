@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Wjire.RPC.DotNetty.Model;
 using Wjire.RPC.DotNetty.Serializer;
 
-namespace Wjire.RPC.DotNetty.Server
+namespace Wjire.RPC.DotNetty
 {
     internal class ServerInvoker
     {

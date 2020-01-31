@@ -3,10 +3,18 @@ using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty
 {
-    internal static class RpcConfig
+    public static class RpcConfig
     {
         internal static IRpcSerializer DefaultSerializer = new RpcJsonSerializer();
 
-        internal static ILogHandler DefaultLogHandler = new TextHandler();
+        public static void UseMessagePackSerializer()
+        {
+            DefaultSerializer = new RpcMessagePackSerializer();
+        }
+
+        public static void UserJsonSerializer()
+        {
+            DefaultSerializer = new RpcJsonSerializer();
+        }
     }
 }

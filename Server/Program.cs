@@ -10,10 +10,11 @@ namespace Server
         private static void Main(string[] args)
         {
             RpcLogService.UseConsoleLog();
-            Wjire.RPC.DotNetty.Server.Server server = new Wjire.RPC.DotNetty.Server.Server(7878);
+            //.net core 自带的DI容器
             ServiceCollection services = new ServiceCollection();
             services.AddSingleton<ITest, Test>();
-            services.AddSingleton<IFoo, Foo>();
+
+            Wjire.RPC.DotNetty.Server server = new Wjire.RPC.DotNetty.Server(7878);
             server.RegisterServices(services);
             server.Start().Wait();
         }
