@@ -21,7 +21,7 @@ namespace Wjire.RPC.DotNetty.Server
             try
             {
                 _port = port;
-                Console.WriteLine($"{DateTime.Now} 开始构建服务!");
+                RpcLogService.WriteLog($"{DateTime.Now} 开始构建服务!");
                 ServerHandler handler = new ServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
@@ -38,6 +38,7 @@ namespace Wjire.RPC.DotNetty.Server
                         IChannelPipeline pipeline = channel.Pipeline;
                         pipeline.AddLast(handler);
                     }));
+                RpcLogService.WriteLog($"{DateTime.Now} 服务构建完成!");
             }
             catch (Exception ex)
             {
@@ -62,9 +63,9 @@ namespace Wjire.RPC.DotNetty.Server
             IChannel channel = null;
             try
             {
-                Console.WriteLine($"{DateTime.Now} 开始启动服务!");
+                RpcLogService.WriteLog($"{DateTime.Now} 开始启动服务!");
                 channel = await _bootstrap.BindAsync(_port);
-                Console.WriteLine($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
+                RpcLogService.WriteLog($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
                 do
                 {
                     string input = Console.ReadLine();
@@ -74,7 +75,7 @@ namespace Wjire.RPC.DotNetty.Server
                     }
                 } while (true);
 
-                Console.WriteLine($"{DateTime.Now} 正在关闭服务,请耐心等待");
+                RpcLogService.WriteLog($"{DateTime.Now} 正在关闭服务,请耐心等待");
             }
             catch (Exception ex)
             {
@@ -96,7 +97,7 @@ namespace Wjire.RPC.DotNetty.Server
                 {
                     await _acceptor.ShutdownGracefullyAsync();
                 }
-                Console.WriteLine($"{DateTime.Now} 服务已关闭!");
+                RpcLogService.WriteLog($"{DateTime.Now} 服务已关闭!");
             }
         }
     }

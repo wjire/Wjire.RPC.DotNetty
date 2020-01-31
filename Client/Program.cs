@@ -21,8 +21,8 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
             RpcLogService.UseConsoleLog();
-            int count = 1000;
-            for (int i = 0; i < 1; i++)
+            int count = 10000;
+            for (int i = 0; i < 10; i++)
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -71,7 +71,7 @@ namespace Client
                 tasks[i] = Task.Run(() =>
                 {
                     Person person = client.GetPerson(Interlocked.Increment(ref num));
-                    //Console.WriteLine(JsonConvert.SerializeObject(person));
+                    Console.WriteLine(JsonConvert.SerializeObject(person));
                 });
             }
             Task.WaitAll(tasks);

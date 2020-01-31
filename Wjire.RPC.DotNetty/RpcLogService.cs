@@ -12,6 +12,11 @@ namespace Wjire.RPC.DotNetty
             _logHandler.WriteLog(ex, remark, request, response, path);
         }
 
+        public static void WriteLog(string content, string path = null)
+        {
+            _logHandler.WriteLog(content, path);
+        }
+
         public static void UseConsoleLog()
         {
             _logHandler = new ConsoleHandler();
