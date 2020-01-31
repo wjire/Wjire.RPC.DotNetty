@@ -5,8 +5,6 @@ namespace IServices
 {
     public interface ITest
     {
-        string Get(string input);
-
         Person GetPerson(int id);
     }
 
@@ -22,7 +20,5 @@ namespace IServices
         public decimal Money { get; set; }
         [Key(3)]
         public DateTime Date { get; set; }
-        [Key(4)]
-        public Person Per { get; set; }
     }
 }

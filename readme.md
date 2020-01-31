@@ -10,6 +10,47 @@
 
 
 示例:
+
+实体:
+
+    //特性是 MessagePack 序列化需要的.如果用默认的 Json 序列化则不需要这些特性    
+    [MessagePackObject]
+    public class Person
+    {
+        [Key(0)]
+        public int Id { get; set; }
+        [Key(1)]
+        public string Name { get; set; }
+        [Key(2)]
+        public decimal Money { get; set; }
+        [Key(3)]
+        public DateTime Date { get; set; }
+    }
+
+服务契约:
+
+    public interface ITest
+    {
+        Person GetPerson(int id);
+    }
+
+服务实现:
+    
+    public class Test : ITest
+    {
+        public Person GetPerson(int id)
+        {
+            return new Person
+            {
+                Id = id,
+                Name = Guid.NewGuid().ToString(),
+                Date = DateTime.Now,
+                Money = 12000M,
+            };
+        }
+    }
+
+
 服务端
      Server server = new Server(7878);
      
@@ -22,13 +63,8 @@
 
 客户端
          
-     ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
-     Person person = client.GetPerson(1);
-
-PS:
-    1.客户端链接已做单例,长连接,对象池.
-    2.默认序列化方式为 Json,内置了另外一种: MessagePack
-
+     ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);//内部已做单例
+     Person person = client.GetPerson(1);//内部实现为长连接+对象池.
 
 本机测试:
     1.Task.Run() 10000 次,平均每次耗时 0.12 ms;
