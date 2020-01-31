@@ -21,5 +21,10 @@ namespace Wjire.RPC.DotNetty
         {
             _logHandler = new ConsoleHandler();
         }
+
+        public static void UseTextLog()
+        {
+            _logHandler = new TextHandler();
+        }
     }
 }
