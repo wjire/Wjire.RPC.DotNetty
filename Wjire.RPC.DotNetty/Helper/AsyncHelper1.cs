@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Wjire.RPC.DotNetty.Helper
 {
     /*
-     * 线程多了要卡住.
+     * Task.Run() 多了,要卡住.慎用!!!!
      */
 
     /// <summary>
