@@ -90,15 +90,5 @@ namespace Client
                 //Console.WriteLine(id + ":" + JsonConvert.SerializeObject(person));
             }
         }
-
-        private static void Test4(int count)
-        {
-            ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
-            for (int i = 0; i < count; i++)
-            {
-                string res = client.Get("wjire");
-                Console.WriteLine(i + ":" + res);
-            }
-        }
     }
 }
