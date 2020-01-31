@@ -22,13 +22,13 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
             RpcLogService.UseConsoleLog();
             int count = 10000;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 50; i++)
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Test3(count);
+                Test2(count);
                 sw.Stop();
-                Console.WriteLine($"运行{count}次,每次耗时:" + (double)sw.ElapsedMilliseconds / count + " ms");
+                Console.WriteLine($"运行{count}次,共耗时:{sw.ElapsedMilliseconds} ms ,每次耗时:" + (double)sw.ElapsedMilliseconds / count + " ms");
             }
 
             Console.WriteLine("over");
