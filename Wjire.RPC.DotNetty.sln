@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wjire.RPC.DotNetty", "Wjire.RPC.DotNetty\Wjire.RPC.DotNetty.csproj", "{E5353702-4255-4A21-83A9-4E6EF86D8D48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client_WebApi", "Client_WebApi\Client_WebApi.csproj", "{51D46C12-D057-44A1-8B11-3CB40FE20D17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client_WebApi", "Client_WebApi\Client_WebApi.csproj", "{51D46C12-D057-44A1-8B11-3CB40FE20D17}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B41B9756-CCB3-4327-9BAD-465FDE75FB88}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
