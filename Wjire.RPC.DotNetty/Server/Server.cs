@@ -28,9 +28,9 @@ namespace Wjire.RPC.DotNetty
                 _bootstrap = new ServerBootstrap()
                     .Group(_acceptor, _client)
                     .Channel<TcpServerSocketChannel>()
-                    .Option(ChannelOption.SoBacklog, 1024)
-                    .Option(ChannelOption.SoSndbuf, 32 * 1024)
-                    .Option(ChannelOption.SoRcvbuf, 32 * 1024)
+                    .Option(ChannelOption.SoBacklog, ServerConfig.SoBacklog)
+                    .Option(ChannelOption.SoSndbuf, ServerConfig.SoSndbuf)
+                    .Option(ChannelOption.SoRcvbuf, ServerConfig.SoRcvbuf)
                     .Option(ChannelOption.SoReuseaddr, true)
                     .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                     {

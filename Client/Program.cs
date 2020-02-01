@@ -21,17 +21,24 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
             RpcLogService.UseConsoleLog();
-            int count = 10000;
-            for (int i = 0; i < 50; i++)
+
+            var client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
+            client.GetPerson(1);
+
             {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Test2(count);
-                sw.Stop();
-                Console.WriteLine($"运行{count}次,共耗时:{sw.ElapsedMilliseconds} ms ,每次耗时:" + (double)sw.ElapsedMilliseconds / count + " ms");
+
+                //int count = 10000;
+                //for (int i = 0; i < 50; i++)
+                //{
+                //    Stopwatch sw = new Stopwatch();
+                //    sw.Start();
+                //    Test2(count);
+                //    sw.Stop();
+                //    Console.WriteLine($"运行{count}次,共耗时:{sw.ElapsedMilliseconds} ms ,每次耗时:" + (double)sw.ElapsedMilliseconds / count + " ms");
+                //}
+                //Console.WriteLine("over");
             }
 
-            Console.WriteLine("over");
             Console.ReadKey();
         }
 
@@ -69,7 +76,7 @@ namespace Client
             {
                 tasks[i] = Task.Run(() =>
                 {
-                Person person = client.GetPerson(1);
+                    Person person = client.GetPerson(1);
                 });
             }
             Task.WaitAll(tasks);
