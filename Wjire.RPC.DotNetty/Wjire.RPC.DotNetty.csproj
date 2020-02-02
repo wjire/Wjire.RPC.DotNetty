@@ -7,19 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
+    <PackageReference Include="DotNetty.Transport" Version="0.6.0" />
     <PackageReference Include="ImpromptuInterface" Version="7.0.1" />
     <PackageReference Include="MessagePack" Version="2.0.335" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\0各类知识练习\源码学习\DotNetty\src\DotNetty.Buffers\DotNetty.Buffers.csproj" />
-    <ProjectReference Include="..\..\..\0各类知识练习\源码学习\DotNetty\src\DotNetty.Codecs\DotNetty.Codecs.csproj" />
-    <ProjectReference Include="..\..\..\0各类知识练习\源码学习\DotNetty\src\DotNetty.Common\DotNetty.Common.csproj" />
-    <ProjectReference Include="..\..\..\0各类知识练习\源码学习\DotNetty\src\DotNetty.Handlers\DotNetty.Handlers.csproj" />
-    <ProjectReference Include="..\..\..\0各类知识练习\源码学习\DotNetty\src\DotNetty.Transport\DotNetty.Transport.csproj" />
   </ItemGroup>
 
   <ItemGroup>
