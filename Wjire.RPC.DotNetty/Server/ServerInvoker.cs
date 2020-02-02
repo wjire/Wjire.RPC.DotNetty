@@ -68,9 +68,17 @@ namespace Wjire.RPC.DotNetty
         {
             for (int i = 0; i < parameters.Length; i++)
             {
-                if (arguments[i].GetType() != parameters[i].ParameterType)
+                var argumentType = arguments[i].GetType();
+                if (argumentType != parameters[i].ParameterType)
                 {
-                    arguments[i] = Convert.ChangeType(arguments[i], parameters[i].ParameterType);
+                    if (argumentType.IsAssignableFrom(typeof(IConvertible)))
+                    {
+                        arguments[i] = Convert.ChangeType(arguments[i], parameters[i].ParameterType);
+                    }
+                    else
+                    {
+                        arguments[i] = _serializer.ToObject(arguments[i], parameters[i].ParameterType);
+                    }
                 }
             }
         }

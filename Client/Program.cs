@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IServices;
@@ -15,15 +17,30 @@ namespace Client
 
         private static void Main(string[] args)
         {
+            //Test(10000);
+            var persons = new List<Person>();
+            for (int i = 0; i < 10000; i++)
+            {
+                persons.Add(new Person { Date = DateTime.Now, Name = "wjire" + i, Id = i, Money = i });
+            }
+            var json = JsonConvert.SerializeObject(persons);
+            Console.WriteLine(Encoding.UTF8.GetBytes(json).Length);
             //ITest test = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             //IFoo foo = ClientFactory.GetClient<IFoo>("127.0.0.1", 7878);
             //Person testResult = test.GetPerson(1);
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
+
             RpcLogService.UseConsoleLog();
 
-            var client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
-            client.GetPerson(1);
+            //var client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
+            var client = ClientFactory.GetClient<ITest>(new ClientConfig("139.224.208.128", 7878)
+            {
+                TimeOut = TimeSpan.FromSeconds(300)
+            });
+            //client.GetPerson(1);
+            var count = client.GetCount(persons);
+            Console.WriteLine(count);
 
             {
 
@@ -42,25 +59,17 @@ namespace Client
             Console.ReadKey();
         }
 
+
         private static void Test(int count)
         {
-            Thread[] threads = new Thread[count];
-            for (int i = 0; i < count; i++)
+            var persons = new List<Person>();
+            for (int i = 0; i < 10000; i++)
             {
-                threads[i] = new Thread(() =>
-                    {
-                        ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
-                        //Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(client.GetPerson(Interlocked.Increment(ref num)))+"\r\n");
-                        Person person = client.GetPerson(Interlocked.Increment(ref num));
-                        Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + JsonConvert.SerializeObject(person));
-                    })
-                { IsBackground = true };
+                persons.Add(new Person { Date = DateTime.Now, Name = "wjire" + i, Id = i, Money = i });
             }
 
-            foreach (Thread t in threads)
-            {
-                t.Start();
-            }
+            var json = JsonConvert.SerializeObject(persons);
+            Console.WriteLine(Encoding.UTF8.GetBytes(json).Length);
         }
 
 
@@ -81,7 +90,6 @@ namespace Client
             }
             Task.WaitAll(tasks);
         }
-
 
         private static void Test3(int count)
         {

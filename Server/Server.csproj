@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IServices\IServices.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
     <ProjectReference Include="..\Wjire.RPC.DotNetty\Wjire.RPC.DotNetty.csproj" />
   </ItemGroup>

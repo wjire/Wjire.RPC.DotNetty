@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DotNetty.Codecs;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
@@ -21,7 +22,7 @@ namespace Wjire.RPC.DotNetty
             {
                 _port = port;
                 RpcLogService.WriteLog($"{DateTime.Now} 开始构建服务!");
-                ServerHandler handler = new ServerHandler(_messageHandler);
+                var handler = new ServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
                 // 服务器引导程序
@@ -35,6 +36,8 @@ namespace Wjire.RPC.DotNetty
                     .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                     {
                         IChannelPipeline pipeline = channel.Pipeline;
+                        pipeline.AddLast("framing-enc", new LengthFieldPrepender(8));
+                        pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 8, 0, 8));
                         pipeline.AddLast(handler);
                     }));
                 RpcLogService.WriteLog($"{DateTime.Now} 服务构建完成!");

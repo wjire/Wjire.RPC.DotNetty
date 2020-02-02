@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using IServices;
 
 namespace Services
@@ -14,6 +15,11 @@ namespace Services
                 Date = DateTime.Now,
                 Money = 12000M,
             };
+        }
+
+        public int GetCount(List<Person> persons)
+        {
+            return persons.Count;
         }
     }
 }

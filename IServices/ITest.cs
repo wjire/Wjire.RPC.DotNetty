@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MessagePack;
 
 namespace IServices
@@ -6,6 +7,8 @@ namespace IServices
     public interface ITest
     {
         Person GetPerson(int id);
+
+        int GetCount(List<Person> persons);
     }
 
 

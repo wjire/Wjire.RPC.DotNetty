@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Dynamic;
 using System.Net;
+using DotNetty.Codecs;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
@@ -64,6 +65,8 @@ namespace Wjire.RPC.DotNetty.Client
                 {
                     IChannelPipeline pipeline = channel.Pipeline;
                     //pipeline.AddLast(new IdleStateHandler(0, 0, _config.AllIdleTimeSeconds));
+                    pipeline.AddLast("framing-enc", new LengthFieldPrepender(8));
+                    pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 8, 0, 8));
                     pipeline.AddLast(handler);
                 }));
             return bootstrap;
