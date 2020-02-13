@@ -9,7 +9,7 @@ namespace Server
     {
         private static void Main(string[] args)
         {
-            RpcLogService.UseConsoleLog();
+            LogService.UseConsoleLog();
             //.net core 自带的DI容器
             ServiceCollection services = new ServiceCollection();
             services.AddSingleton<ITest, Test>();

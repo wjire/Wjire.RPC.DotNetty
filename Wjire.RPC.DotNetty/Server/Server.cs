@@ -5,6 +5,7 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.DependencyInjection;
+using Wjire.Log;
 
 namespace Wjire.RPC.DotNetty
 {
@@ -21,7 +22,7 @@ namespace Wjire.RPC.DotNetty
             try
             {
                 _port = port;
-                RpcLogService.WriteLog($"{DateTime.Now} 开始构建服务!");
+                LogService.WriteText($"{DateTime.Now} 开始构建服务!");
                 ServerHandler handler = new ServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
@@ -40,11 +41,11 @@ namespace Wjire.RPC.DotNetty
                         pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 8, 0, 8));
                         pipeline.AddLast(handler);
                     }));
-                RpcLogService.WriteLog($"{DateTime.Now} 服务构建完成!");
+                LogService.WriteText($"{DateTime.Now} 服务构建完成!");
             }
             catch (Exception ex)
             {
-                RpcLogService.WriteLog(ex, "构建服务异常");
+                LogService.WriteException(ex, "构建服务异常");
                 //执行很慢.
                 Task.WaitAll(_client?.ShutdownGracefullyAsync(), _acceptor?.ShutdownGracefullyAsync());
                 _client = null;
@@ -65,9 +66,9 @@ namespace Wjire.RPC.DotNetty
             IChannel channel = null;
             try
             {
-                RpcLogService.WriteLog($"{DateTime.Now} 开始启动服务!");
+                LogService.WriteText($"{DateTime.Now} 开始启动服务!");
                 channel = await _bootstrap.BindAsync(_port);
-                RpcLogService.WriteLog($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
+                LogService.WriteText($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
                 do
                 {
                     string input = Console.ReadLine();
@@ -77,11 +78,11 @@ namespace Wjire.RPC.DotNetty
                     }
                 } while (true);
 
-                RpcLogService.WriteLog($"{DateTime.Now} 正在关闭服务,请耐心等待");
+                LogService.WriteText($"{DateTime.Now} 正在关闭服务,请耐心等待");
             }
             catch (Exception ex)
             {
-                RpcLogService.WriteLog(ex, "启动服务异常");
+                LogService.WriteException(ex, "启动服务异常");
             }
             finally
             {
@@ -99,7 +100,7 @@ namespace Wjire.RPC.DotNetty
                 {
                     await _acceptor.ShutdownGracefullyAsync();
                 }
-                RpcLogService.WriteLog($"{DateTime.Now} 服务已关闭!");
+                LogService.WriteText($"{DateTime.Now} 服务已关闭!");
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IServices;
 using Newtonsoft.Json;
+using Wjire.Log;
 using Wjire.RPC.DotNetty;
 using Wjire.RPC.DotNetty.Client;
 
@@ -29,7 +30,6 @@ namespace Client
             //Console.WriteLine(JsonConvert.SerializeObject(testResult));
             //Console.WriteLine(JsonConvert.SerializeObject(foo.Get()));
 
-            RpcLogService.UseConsoleLog();
 
             //var client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
             ITest client = ClientFactory.GetClient<ITest>(new ClientConfig("139.224.208.128", 7878)

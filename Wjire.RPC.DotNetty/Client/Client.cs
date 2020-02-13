@@ -6,6 +6,7 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.ObjectPool;
+using Wjire.Log;
 using Wjire.RPC.DotNetty.Helper;
 using Wjire.RPC.DotNetty.Model;
 
@@ -30,7 +31,7 @@ namespace Wjire.RPC.DotNetty.Client
             }
             catch (Exception ex)
             {
-                RpcLogService.WriteLog(ex, "Client ctor");
+                LogService.WriteException(ex, "client ctor throw a exception");
                 group?.ShutdownGracefullyAsync().Wait();
                 throw;
             }

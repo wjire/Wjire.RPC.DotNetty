@@ -4,6 +4,7 @@ using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.ObjectPool;
+using Wjire.Log;
 using Wjire.RPC.DotNetty.Model;
 using Wjire.RPC.DotNetty.Serializer;
 
@@ -49,13 +50,13 @@ namespace Wjire.RPC.DotNetty.Client
             catch (OperationCanceledException ex)
             {
                 channel?.CloseAsync();
-                RpcLogService.WriteLog(ex, "服务器响应超时", request, response);
+                LogService.WriteException(ex, "服务器响应超时", request, response);
                 throw;
             }
             catch (Exception ex)
             {
                 _waiters.TryRemove(channelId, out ClientWaiter value);
-                RpcLogService.WriteLog(ex, "服务器出现异常", request, response);
+                LogService.WriteException(ex, "服务器出现异常", request, response);
                 throw;
             }
             finally
