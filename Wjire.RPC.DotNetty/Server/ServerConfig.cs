@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net;
-
-namespace Wjire.RPC.DotNetty
+﻿namespace Wjire.RPC.DotNetty
 {
     public static class ServerConfig
     {

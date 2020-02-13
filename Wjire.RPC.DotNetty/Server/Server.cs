@@ -22,7 +22,7 @@ namespace Wjire.RPC.DotNetty
             {
                 _port = port;
                 RpcLogService.WriteLog($"{DateTime.Now} 开始构建服务!");
-                var handler = new ServerHandler(_messageHandler);
+                ServerHandler handler = new ServerHandler(_messageHandler);
                 _acceptor = new MultithreadEventLoopGroup(1);
                 _client = new MultithreadEventLoopGroup();
                 // 服务器引导程序

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using IServices;
 using Newtonsoft.Json;
@@ -13,17 +11,17 @@ namespace Client
 {
     internal class Program
     {
-        private static int num;
+        private static readonly int num;
 
         private static void Main(string[] args)
         {
             //Test(10000);
-            var persons = new List<Person>();
+            List<Person> persons = new List<Person>();
             for (int i = 0; i < 10000; i++)
             {
                 persons.Add(new Person { Date = DateTime.Now, Name = "wjire" + i, Id = i, Money = i });
             }
-            var json = JsonConvert.SerializeObject(persons);
+            string json = JsonConvert.SerializeObject(persons);
             Console.WriteLine(Encoding.UTF8.GetBytes(json).Length);
             //ITest test = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
             //IFoo foo = ClientFactory.GetClient<IFoo>("127.0.0.1", 7878);
@@ -34,12 +32,12 @@ namespace Client
             RpcLogService.UseConsoleLog();
 
             //var client = ClientFactory.GetClient<ITest>("139.224.208.128", 7878);
-            var client = ClientFactory.GetClient<ITest>(new ClientConfig("139.224.208.128", 7878)
+            ITest client = ClientFactory.GetClient<ITest>(new ClientConfig("139.224.208.128", 7878)
             {
                 TimeOut = TimeSpan.FromSeconds(300)
             });
             //client.GetPerson(1);
-            var count = client.GetCount(persons);
+            int count = client.GetCount(persons);
             Console.WriteLine(count);
 
             {
@@ -62,13 +60,13 @@ namespace Client
 
         private static void Test(int count)
         {
-            var persons = new List<Person>();
+            List<Person> persons = new List<Person>();
             for (int i = 0; i < 10000; i++)
             {
                 persons.Add(new Person { Date = DateTime.Now, Name = "wjire" + i, Id = i, Money = i });
             }
 
-            var json = JsonConvert.SerializeObject(persons);
+            string json = JsonConvert.SerializeObject(persons);
             Console.WriteLine(Encoding.UTF8.GetBytes(json).Length);
         }
 

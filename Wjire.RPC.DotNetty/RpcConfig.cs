@@ -1,5 +1,4 @@
-﻿using Wjire.RPC.DotNetty.Log;
-using Wjire.RPC.DotNetty.Serializer;
+﻿using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty
 {

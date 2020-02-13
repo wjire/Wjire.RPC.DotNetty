@@ -4,7 +4,6 @@ using System.Threading;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.ObjectPool;
-using Wjire.RPC.DotNetty.Log;
 using Wjire.RPC.DotNetty.Model;
 using Wjire.RPC.DotNetty.Serializer;
 
@@ -26,7 +25,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         internal object GetResponse(Type serviceType, RpcRequest request, TimeSpan timeOut)
         {
-            IChannel channel = null;
+            IChannel channel;
             while ((channel = ChannelPool.Get()).Open == false) { }
             string channelId = GetChannelId(channel);
             ClientWaiter messageWaiter = new ClientWaiter(timeOut);
@@ -56,7 +55,7 @@ namespace Wjire.RPC.DotNetty.Client
             catch (Exception ex)
             {
                 _waiters.TryRemove(channelId, out ClientWaiter value);
-                RpcLogService.WriteLog(ex, nameof(GetResponse), request, response);
+                RpcLogService.WriteLog(ex, "服务器出现异常", request, response);
                 throw;
             }
             finally
