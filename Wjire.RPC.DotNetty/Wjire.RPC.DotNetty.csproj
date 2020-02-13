@@ -17,16 +17,4 @@
     <PackageReference Include="Wjire.Log" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Wjire.Log">
-      <HintPath>Libs\Wjire.Log.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Libs\Wjire.Log.dll">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

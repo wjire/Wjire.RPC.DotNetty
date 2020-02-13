@@ -12,7 +12,7 @@
 
 依赖注入:   Microsoft.Extensions.DependencyInjection
 
-日志记录:   Wjire.Log (自制)
+日志记录:   Wjire.Log
 
 
 示例:
