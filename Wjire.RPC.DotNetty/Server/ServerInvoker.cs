@@ -12,9 +12,7 @@ namespace Wjire.RPC.DotNetty
         private readonly IRpcSerializer _serializer;
         private IServiceProvider _serviceProvider;
         private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
-
-        internal ServerInvoker() : this(RpcConfig.DefaultSerializer) { }
-
+        
         internal ServerInvoker(IRpcSerializer serializer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));

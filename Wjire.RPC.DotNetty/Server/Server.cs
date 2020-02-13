@@ -6,6 +6,7 @@ using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.DependencyInjection;
 using Wjire.Log;
+using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty
 {
@@ -15,12 +16,13 @@ namespace Wjire.RPC.DotNetty
         private readonly IEventLoopGroup _acceptor;
         private readonly IEventLoopGroup _client;
         private readonly ServerBootstrap _bootstrap;
-        private readonly ServerInvoker _messageHandler = new ServerInvoker();
+        private readonly ServerInvoker _messageHandler;
 
         public Server(int port)
         {
             try
             {
+                _messageHandler = new ServerInvoker(ServerConfig.RpcSerializer);
                 _port = port;
                 LogService.WriteText($"{DateTime.Now} 开始构建服务!");
                 ServerHandler handler = new ServerHandler(_messageHandler);
@@ -57,6 +59,12 @@ namespace Wjire.RPC.DotNetty
         public Server RegisterServices(ServiceCollection services)
         {
             _messageHandler.InitServicesMap(services);
+            return this;
+        }
+
+        public Server UseMessagePackSerializer()
+        {
+            ServerConfig.RpcSerializer = new RpcMessagePackSerializer();
             return this;
         }
 

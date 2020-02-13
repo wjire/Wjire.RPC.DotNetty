@@ -16,17 +16,18 @@ namespace Wjire.RPC.DotNetty.Client
     {
         private readonly Type _serviceType;
         private readonly ClientConfig _config;
-        private readonly ClientInvoker _clientInvoker = new ClientInvoker();
+        private readonly ClientInvoker _clientInvoker;
 
         public Client(Type serviceType, ClientConfig config)
         {
+            _clientInvoker = new ClientInvoker(config.RpcSerializer);
             _serviceType = serviceType;
             _config = config;
-            IEventLoopGroup group = null;
+            IEventLoopGroup group = new MultithreadEventLoopGroup();
             try
             {
                 Console.WriteLine("ctor Client");
-                Bootstrap bootstrap = InitBootstrap(out group);
+                Bootstrap bootstrap = InitBootstrap(group);
                 _clientInvoker.ChannelPool = InitChannelPool(bootstrap);
             }
             catch (Exception ex)
@@ -51,9 +52,8 @@ namespace Wjire.RPC.DotNetty.Client
         }
 
 
-        private Bootstrap InitBootstrap(out IEventLoopGroup group)
+        private Bootstrap InitBootstrap(IEventLoopGroup group)
         {
-            group = new MultithreadEventLoopGroup();
             ClientHandler handler = new ClientHandler(_clientInvoker);
             Bootstrap bootstrap = new Bootstrap()
                 .Group(group)

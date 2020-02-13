@@ -15,9 +15,7 @@ namespace Wjire.RPC.DotNetty.Client
         private readonly IRpcSerializer _serializer;
         internal ObjectPool<IChannel> ChannelPool { get; set; }
         private readonly ConcurrentDictionary<string, ClientWaiter> _waiters = new ConcurrentDictionary<string, ClientWaiter>();
-
-        internal ClientInvoker() : this(RpcConfig.DefaultSerializer) { }
-
+        
         internal ClientInvoker(IRpcSerializer serializer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
