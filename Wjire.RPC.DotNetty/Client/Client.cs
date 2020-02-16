@@ -33,7 +33,7 @@ namespace Wjire.RPC.DotNetty.Client
             catch (Exception ex)
             {
                 LogService.WriteException(ex, "client ctor throw a exception");
-                group?.ShutdownGracefullyAsync().Wait();
+                group.ShutdownGracefullyAsync().Wait();
                 throw;
             }
         }
