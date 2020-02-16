@@ -69,9 +69,3 @@
          
      ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);//内部已做单例
      Person person = client.GetPerson(1);//内部实现为长连接+对象池.
-
-本机测试:
-
-    1.Task.Run() 10000 次,耗时 1 s,平均每次请求耗时 0.1 ms;
-
-    2.单线程运行 10000 次,耗时 2.4 s,平均每次请求耗时 0.24 ms;
