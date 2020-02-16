@@ -4,8 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using IServices;
 using Newtonsoft.Json;
-using Wjire.Log;
-using Wjire.RPC.DotNetty;
 using Wjire.RPC.DotNetty.Client;
 
 namespace Client

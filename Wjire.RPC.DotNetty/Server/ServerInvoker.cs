@@ -12,7 +12,7 @@ namespace Wjire.RPC.DotNetty
         private readonly IRpcSerializer _serializer;
         private IServiceProvider _serviceProvider;
         private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
-        
+
         internal ServerInvoker(IRpcSerializer serializer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
@@ -67,7 +67,11 @@ namespace Wjire.RPC.DotNetty
             for (int i = 0; i < parameters.Length; i++)
             {
                 Type argumentType = arguments[i].GetType();
-                if (argumentType == parameters[i].ParameterType) continue;
+                if (argumentType == parameters[i].ParameterType)
+                {
+                    continue;
+                }
+
                 if (argumentType.IsAssignableFrom(typeof(IConvertible)))
                 {
                     arguments[i] = Convert.ChangeType(arguments[i], parameters[i].ParameterType);

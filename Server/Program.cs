@@ -1,7 +1,6 @@
 ﻿using IServices;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
-using Wjire.RPC.DotNetty;
 
 namespace Server
 {
@@ -9,7 +8,6 @@ namespace Server
     {
         private static void Main(string[] args)
         {
-            LogService.UseConsoleLog();
             //.net core 自带的DI容器
             ServiceCollection services = new ServiceCollection();
             services.AddSingleton<ITest, Test>();
