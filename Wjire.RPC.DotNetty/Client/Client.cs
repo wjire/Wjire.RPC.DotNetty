@@ -26,7 +26,7 @@ namespace Wjire.RPC.DotNetty.Client
             IEventLoopGroup group = new MultithreadEventLoopGroup();
             try
             {
-                Console.WriteLine("ctor Client");
+                //Console.WriteLine("ctor Client");
                 Bootstrap bootstrap = InitBootstrap(group);
                 _clientInvoker.ChannelPool = InitChannelPool(bootstrap);
             }
@@ -65,8 +65,8 @@ namespace Wjire.RPC.DotNetty.Client
                 {
                     IChannelPipeline pipeline = channel.Pipeline;
                     //pipeline.AddLast(new IdleStateHandler(0, 0, _config.AllIdleTimeSeconds));
-                    pipeline.AddLast("framing-enc", new LengthFieldPrepender(8));
-                    pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 8, 0, 8));
+                    pipeline.AddLast("framing-enc", new LengthFieldPrepender(4));
+                    pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
                     pipeline.AddLast(handler);
                 }));
             return bootstrap;
@@ -86,7 +86,7 @@ namespace Wjire.RPC.DotNetty.Client
             private readonly Bootstrap _bootstrap;
             private readonly IPEndPoint _remoteAddress;
 
-            public ChannelPooledObjectPolicy(Bootstrap bootstrap, IPEndPoint remoteAddress)
+            internal ChannelPooledObjectPolicy(Bootstrap bootstrap, IPEndPoint remoteAddress)
             {
                 _bootstrap = bootstrap;
                 _remoteAddress = remoteAddress;

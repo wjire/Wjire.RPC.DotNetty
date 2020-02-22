@@ -1,54 +1,39 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using DotNetty.Codecs;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Wjire.Log;
 using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty
 {
-    public class Server
+    public class Server : IHostedService, IDisposable
     {
-        private readonly int _port;
-        private readonly IEventLoopGroup _acceptor;
-        private readonly IEventLoopGroup _client;
-        private readonly ServerBootstrap _bootstrap;
-        private readonly ServerInvoker _messageHandler;
+        private int _port;
+        private IEventLoopGroup _acceptor;
+        private IEventLoopGroup _client;
+        private IChannel _channel;
+        private ServerBootstrap _bootstrap;
+        private bool _isClosed;
+        private const string ServerConfig = "ServerConfig";
 
-        public Server(int port)
+        public Server(IConfiguration configuration) : this(configuration, new RpcJsonSerializer()) { }
+
+
+        public Server(IConfiguration configuration, IRpcSerializer rpcSerializer)
         {
             try
             {
-                _messageHandler = new ServerInvoker(ServerConfig.RpcSerializer);
-                _port = port;
-                LogService.WriteText($"{DateTime.Now} 开始构建服务!");
-                ServerHandler handler = new ServerHandler(_messageHandler);
-                _acceptor = new MultithreadEventLoopGroup(1);
-                _client = new MultithreadEventLoopGroup();
-                // 服务器引导程序
-                _bootstrap = new ServerBootstrap()
-                    .Group(_acceptor, _client)
-                    .Channel<TcpServerSocketChannel>()
-                    .Option(ChannelOption.SoBacklog, ServerConfig.SoBacklog)
-                    .Option(ChannelOption.SoSndbuf, ServerConfig.SoSndbuf)
-                    .Option(ChannelOption.SoRcvbuf, ServerConfig.SoRcvbuf)
-                    .Option(ChannelOption.SoReuseaddr, true)
-                    .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
-                    {
-                        IChannelPipeline pipeline = channel.Pipeline;
-                        pipeline.AddLast("framing-enc", new LengthFieldPrepender(8));
-                        pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 8, 0, 8));
-                        pipeline.AddLast(handler);
-                    }));
-                LogService.WriteText($"{DateTime.Now} 服务构建完成!");
+                Init(configuration, rpcSerializer);
             }
             catch (Exception ex)
             {
-                LogService.WriteException(ex, "构建服务异常");
-                //执行很慢.
+                LogService.WriteText("构建服务异常:" + ex);
                 Task.WaitAll(_client?.ShutdownGracefullyAsync(), _acceptor?.ShutdownGracefullyAsync());
                 _client = null;
                 _acceptor = null;
@@ -56,59 +41,78 @@ namespace Wjire.RPC.DotNetty
             }
         }
 
-        public Server RegisterServices(ServiceCollection services)
+        private void Init(IConfiguration configuration, IRpcSerializer rpcSerializer)
         {
-            _messageHandler.InitServicesMap(services);
-            return this;
+            LogService.WriteText("开始初始化服务!");
+
+            ServerConfig serverConfig = configuration.GetSection(ServerConfig).Get<ServerConfig>();
+            _port = serverConfig.Port;
+            ServerInvoker invoker = new ServerInvoker(rpcSerializer, RpcServiceCollection.Singleton);
+            ServerHandler handler = new ServerHandler(invoker);
+            _acceptor = new MultithreadEventLoopGroup(serverConfig.AcceptorEventLoopCount);
+            _client = new MultithreadEventLoopGroup(serverConfig.ClientEventLoopCount);
+            // 服务器引导程序
+            _bootstrap = new ServerBootstrap()
+                .Group(_acceptor, _client)
+                .Channel<TcpServerSocketChannel>()
+                .Option(ChannelOption.SoBacklog, serverConfig.SoBacklog)
+                .Option(ChannelOption.SoSndbuf, serverConfig.SoSndbuf)
+                .Option(ChannelOption.SoRcvbuf, serverConfig.SoRcvbuf)
+                .Option(ChannelOption.SoReuseaddr, true)
+                .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+                {
+                    IChannelPipeline pipeline = channel.Pipeline;
+                    pipeline.AddLast("framing-enc", new LengthFieldPrepender(4));
+                    pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(serverConfig.MaxFrameLength, 0, 4, 0, 4));
+                    pipeline.AddLast(handler);
+                }));
+
+            LogService.WriteText("服务初始化完成!");
         }
 
-        public Server UseMessagePackSerializer()
-        {
-            ServerConfig.RpcSerializer = new RpcMessagePackSerializer();
-            return this;
-        }
 
-
-        public async Task Start()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            IChannel channel = null;
             try
             {
-                LogService.WriteText($"{DateTime.Now} 开始启动服务!");
-                channel = await _bootstrap.BindAsync(_port);
-                LogService.WriteText($"{DateTime.Now} 服务已启动,端口号 : {_port},按 'Q' 键退出");
-                do
-                {
-                    string input = Console.ReadLine();
-                    if (input?.Equals("q", StringComparison.OrdinalIgnoreCase) == true)
-                    {
-                        break;
-                    }
-                } while (true);
-
-                LogService.WriteText($"{DateTime.Now} 正在关闭服务,请耐心等待");
+                LogService.WriteText("开始启动服务!");
+                _channel = await _bootstrap.BindAsync(_port);
+                LogService.WriteText($"服务已启动,端口号 : {_port}");
             }
             catch (Exception ex)
             {
-                LogService.WriteException(ex, "启动服务异常");
+                LogService.WriteText("启动服务发生异常:" + ex);
+                cancellationToken.ThrowIfCancellationRequested();
             }
-            finally
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+
+        public void Dispose()
+        {
+            if (_isClosed)
             {
-                if (channel != null)
-                {
-                    await channel.CloseAsync();
-                }
-
-                if (_client != null)
-                {
-                    await _client.ShutdownGracefullyAsync();
-                }
-
-                if (_acceptor != null)
-                {
-                    await _acceptor.ShutdownGracefullyAsync();
-                }
-                LogService.WriteText($"{DateTime.Now} 服务已关闭!");
+                return;
+            }
+            LogService.WriteText("开始关闭服务");
+            try
+            {
+                Task.WaitAll
+                (
+                    _channel?.CloseAsync(),
+                _client?.ShutdownGracefullyAsync(),
+                _acceptor?.ShutdownGracefullyAsync()
+                );
+                _isClosed = true;
+                LogService.WriteText("服务已关闭!");
+            }
+            catch (Exception ex)
+            {
+                LogService.WriteText("服务关闭发生异常:" + ex);
             }
         }
     }

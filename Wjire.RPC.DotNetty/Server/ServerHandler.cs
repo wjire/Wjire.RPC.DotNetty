@@ -19,7 +19,6 @@ namespace Wjire.RPC.DotNetty
 
         protected override void ChannelRead0(IChannelHandlerContext ctx, IByteBuffer msg)
         {
-            Console.WriteLine(ctx.Channel.RemoteAddress);
             byte[] bytes = new byte[msg.ReadableBytes];
             msg.ReadBytes(bytes);
             byte[] buffer = _serverInvoker.GetResponseBytes(bytes);
@@ -48,7 +47,7 @@ namespace Wjire.RPC.DotNetty
 
         public override void ExceptionCaught(IChannelHandlerContext context, Exception exception)
         {
-            LogService.WriteException(exception, "ServerHandler throw Exception: ");
+            LogService.WriteExceptionAsync(exception, "ServerHandler throw Exception: ");
             context.CloseAsync();
         }
     }

@@ -23,5 +23,10 @@ namespace Wjire.RPC.DotNetty.Serializer
             string json = Encoding.UTF8.GetString(bytes);
             return JsonConvert.DeserializeObject<T>(json);
         }
+
+        public string ToString(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
     }
 }

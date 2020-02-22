@@ -19,5 +19,10 @@ namespace Wjire.RPC.DotNetty.Serializer
         {
             return MessagePackSerializer.Deserialize<T>(bytes);
         }
+
+        public string ToString(object obj)
+        {
+            return MessagePackSerializer.SerializeToJson(obj);
+        }
     }
 }

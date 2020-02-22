@@ -9,5 +9,7 @@ namespace Wjire.RPC.DotNetty.Serializer
         byte[] ToBytes(object obj);
 
         T ToObject<T>(byte[] bytes);
+
+        string ToString(object obj);
     }
 }

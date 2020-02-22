@@ -47,7 +47,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         public override void ExceptionCaught(IChannelHandlerContext context, Exception exception)
         {
-            LogService.WriteException(exception, "ClientHandler throw Exception");
+            LogService.WriteExceptionAsync(exception, "ClientHandler throw Exception");
             context.CloseAsync();
         }
     }

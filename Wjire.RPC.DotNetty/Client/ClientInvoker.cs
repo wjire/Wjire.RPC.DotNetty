@@ -48,13 +48,13 @@ namespace Wjire.RPC.DotNetty.Client
             catch (OperationCanceledException ex)
             {
                 channel?.CloseAsync();
-                LogService.WriteException(ex, "服务器响应超时", request, response);
+                LogService.WriteExceptionAsync(ex, "服务器响应超时", request, response);
                 throw;
             }
             catch (Exception ex)
             {
                 _waiters.TryRemove(channelId, out ClientWaiter value);
-                LogService.WriteException(ex, "服务器出现异常", request, response);
+                LogService.WriteExceptionAsync(ex, "服务器出现异常", request, response);
                 throw;
             }
             finally
