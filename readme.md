@@ -19,7 +19,6 @@
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
     <!--ÈÕÖ¾¼ÇÂ¼-->
     <PackageReference Include="Wjire.Log" Version="1.0.3" />
-
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
