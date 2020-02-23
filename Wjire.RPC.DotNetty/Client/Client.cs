@@ -53,6 +53,7 @@ namespace Wjire.RPC.DotNetty.Client
             }
             catch (OperationCanceledException ex)
             {
+                RemoveWaiter(channel);
                 channel?.CloseAsync();
                 LogService.WriteExceptionAsync(ex, "服务器响应超时", request, response);
                 throw;
@@ -60,11 +61,7 @@ namespace Wjire.RPC.DotNetty.Client
             catch (Exception ex)
             {
                 LogService.WriteExceptionAsync(ex, "服务器出现异常", request, response);
-                bool removeResult = _clientInvoker.Remove(channel, out string channelId);
-                if (removeResult == false)
-                {
-                    LogService.WriteExceptionAsync(new Exception("移除 channel 失败"), "remove channel", channelId);
-                }
+                RemoveWaiter(channel);
                 throw;
             }
             finally
@@ -100,6 +97,15 @@ namespace Wjire.RPC.DotNetty.Client
             }
             Type returnType = _serviceType.GetMethod(methodName)?.ReturnType;
             return returnType == typeof(void) ? null : _rpcSerializer.ToObject(response.Data, returnType);
+        }
+
+        private void RemoveWaiter(IChannel channel)
+        {
+            bool removeResult = _clientInvoker.Remove(channel, out string channelId);
+            if (removeResult == false)
+            {
+                LogService.WriteExceptionAsync(new Exception("移除 waiter 失败"), "remove waiter", channelId);
+            }
         }
     }
 }
