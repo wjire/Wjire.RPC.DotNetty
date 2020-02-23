@@ -52,9 +52,9 @@ namespace Client
 
 
 
-            //Test2(111);
+            Test2(1111);
             //Console.ReadKey();
-            //Test3(311);
+            Test3(3111);
 
 
             //string json = JsonConvert.SerializeObject(persons);

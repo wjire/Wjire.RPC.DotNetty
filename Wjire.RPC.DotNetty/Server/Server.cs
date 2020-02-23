@@ -42,6 +42,10 @@ namespace Wjire.RPC.DotNetty
         {
             LogService.WriteText("开始初始化服务!", StartupLogs);
             ServerConfig serverConfig = configuration.GetSection(ServerConfigKeyInAppSettings).Get<ServerConfig>();
+            if (serverConfig == null)
+            {
+                throw new ArgumentException("未在配置文件中读取到 ServerConfig 节点");
+            }
             _port = serverConfig.Port;
             ServerInvoker invoker = new ServerInvoker(provider);
             ServerHandler handler = new ServerHandler(invoker);
