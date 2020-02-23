@@ -15,10 +15,7 @@ namespace Client_WebApi.Controllers
         {
             int count = 1000;
             Task[] tasks = new Task[count];
-            ClientConfig config = new ClientConfig("127.0.0.1", 7878)
-            {
-                AllIdleTimeSeconds = 10
-            };
+            ClientConfig config = new ClientConfig("127.0.0.1", 9999);
             ITest client = ClientFactory.GetClient<ITest>(config);
             for (int i = 0; i < tasks.Length; i++)
             {

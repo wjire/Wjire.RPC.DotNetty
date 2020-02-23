@@ -5,27 +5,20 @@
 包:
 
   <ItemGroup>
-    <!--通信框架-->
     <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
     <PackageReference Include="DotNetty.Transport" Version="0.6.0" />
-    <!--动态代理-->
     <PackageReference Include="ImpromptuInterface" Version="7.0.1" />
-    <!--序列化-->
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="MessagePack" Version="2.1.90" />
-    <!--方便做windows服务-->
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.2" />
-    <!--连接池-->
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
-    <!--日志记录-->
     <PackageReference Include="Wjire.Log" Version="1.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
   </ItemGroup>
 
 
@@ -108,10 +101,10 @@ Windows 服务常用命令
     注册:
         
         @echo off
-        title 0MyService
-        sc delete 0MyService
-        sc create 0MyService binpath= "%~dp0%..\Server.exe" displayname= "0MyService" depend= Tcpip start= auto
-        sc description 0MyService 服务描述
+        title ServiceName
+        sc delete ServiceName
+        sc create ServiceName binpath= "%~dp0%..\******.exe" displayname= "ServiceName" depend= Tcpip start= auto
+        sc description ServiceName 服务描述
         pause
         exit
 
@@ -119,15 +112,15 @@ Windows 服务常用命令
     启动:
 
         @echo off
-        title 0MyService
-        net start 0MyService
+        title ServiceName
+        net start ServiceName
         pause
         exit
 
     停止:
 
         @echo off
-        title 0MyService
-        net stop 0MyService
+        title ServiceName
+        net stop ServiceName
         pause
         exit
