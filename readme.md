@@ -44,6 +44,22 @@
     }
 
 
+配置文件:
+    
+    {
+      "ServerConfig": {
+        "Port": 9999,
+        //以下配置均为默认值
+        "AcceptorEventLoopCount": 1,
+        //"ClientEventLoopCount": //默认 Environment.ProcessorCount * 2;
+        "SoBacklog": 1024,
+        "SoSndbuf": 65536,
+        "SoRcvbuf": 65536
+        //"MaxFrameLength":   //默认 int.MaxValue;
+      }
+    }
+    
+
 服务端
 
     internal class Program
