@@ -7,13 +7,19 @@ namespace Wjire.RPC.DotNetty.Client
 {
     internal class ClientHandler : SimpleChannelInboundHandler<IByteBuffer>
     {
-        private readonly ClientInvoker _clientInvoker;
+
+        //private readonly ClientInvoker _clientInvoker;
+        private readonly ClientInvoker _clientWaiterCollection;
         private const string HEARTBEAT = "HEARTBEAT";
 
-        internal ClientHandler(ClientInvoker clientInvoker)
+        internal ClientHandler(ClientInvoker clientWaiterCollection)
         {
-            _clientInvoker = clientInvoker;
+            _clientWaiterCollection = clientWaiterCollection;
         }
+        //internal ClientHandler(ClientInvoker clientInvoker)
+        //{
+        //    _clientInvoker = clientInvoker;
+        //}
 
         public override bool IsSharable => true;
 
@@ -21,7 +27,8 @@ namespace Wjire.RPC.DotNetty.Client
         {
             byte[] bytes = new byte[message.ReadableBytes];
             message.ReadBytes(bytes);
-            _clientInvoker.Set(context.Channel, bytes);
+            //_clientInvoker.Set(context.Channel, bytes);
+            _clientWaiterCollection.Set(context.Channel, bytes);
         }
 
         //public override void UserEventTriggered(IChannelHandlerContext context, object evt)

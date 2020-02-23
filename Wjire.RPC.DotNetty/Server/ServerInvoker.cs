@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Wjire.Log;
@@ -11,7 +10,7 @@ namespace Wjire.RPC.DotNetty
     internal class ServerInvoker
     {
         private readonly IRpcSerializer _serializer;
-        private IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
         //private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
 
         //internal ServerInvoker(IRpcSerializer serializer, IServiceCollection services)
@@ -63,12 +62,12 @@ namespace Wjire.RPC.DotNetty
             //    throw new ArgumentException($"not find the service : {request.ServiceName}");
             //}
 
-            var service = _serviceProvider.GetService(request.ServiceType);
+            object service = _serviceProvider.GetService(request.ServiceType);
 
             MethodInfo methodInfo = service.GetType().GetMethod(request.MethodName);
             if (methodInfo == null)
             {
-                throw new ArgumentException($"not find the method:{request.MethodName} on service:{request.ServiceName}");
+                throw new ArgumentException($"not find the method:{request.MethodName} on service:{request.ServiceType.FullName}");
             }
             CheckArguments(request.Arguments, methodInfo.GetParameters());
             object result = methodInfo.Invoke(service, request.Arguments);

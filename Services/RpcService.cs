@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using IServices;
-
-namespace Services
+﻿namespace Services
 {
-    public class RpcService 
+    public class RpcService
     {
     }
 }

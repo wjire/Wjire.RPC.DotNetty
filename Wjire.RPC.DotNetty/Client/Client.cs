@@ -1,43 +1,32 @@
 ﻿using System;
 using System.Dynamic;
-using System.Net;
-using DotNetty.Codecs;
-using DotNetty.Transport.Bootstrapping;
+using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
-using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.ObjectPool;
 using Wjire.Log;
-using Wjire.RPC.DotNetty.Helper;
 using Wjire.RPC.DotNetty.Model;
+using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty.Client
 {
     public class Client : DynamicObject
     {
         private readonly Type _serviceType;
-        private readonly ClientConfig _config;
+        private readonly TimeSpan _timeOut;
+        private readonly IRpcSerializer _rpcSerializer;
+        private readonly ObjectPool<IChannel> _channelPool;
         private readonly ClientInvoker _clientInvoker;
 
-        public Client(Type serviceType, ClientConfig config)
-        {
-            _clientInvoker = new ClientInvoker(config.RpcSerializer);
-            _serviceType = serviceType;
-            _config = config;
-            IEventLoopGroup group = new MultithreadEventLoopGroup();
-            try
-            {
-                //Console.WriteLine("ctor Client");
-                Bootstrap bootstrap = InitBootstrap(group);
-                _clientInvoker.ChannelPool = InitChannelPool(bootstrap);
-            }
-            catch (Exception ex)
-            {
-                LogService.WriteException(ex, "client ctor throw a exception");
-                group.ShutdownGracefullyAsync().Wait();
-                throw;
-            }
-        }
 
+        internal Client(Type serviceType, ClientConfig config, ObjectPool<IChannel> channelPool, ClientInvoker clientInvoker)
+        {
+            //Console.WriteLine("Client ctor");
+            _serviceType = serviceType;
+            _timeOut = config.TimeOut;
+            _rpcSerializer = config.RpcSerializer;
+            _channelPool = channelPool;
+            _clientInvoker = clientInvoker;
+        }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
@@ -45,64 +34,72 @@ namespace Wjire.RPC.DotNetty.Client
             {
                 MethodName = binder.Name,
                 Arguments = args,
-                //ServiceName = _serviceType.FullName,
                 ServiceType = _serviceType,
             };
-            result = _clientInvoker.GetResponse(_serviceType, request, _config.TimeOut);
+            result = GetReturnValue(request);
             return true;
         }
 
 
-        private Bootstrap InitBootstrap(IEventLoopGroup group)
+        private object GetReturnValue(RpcRequest request)
         {
-            ClientHandler handler = new ClientHandler(_clientInvoker);
-            Bootstrap bootstrap = new Bootstrap()
-                .Group(group)
-                .Channel<TcpSocketChannel>()
-                .Option(ChannelOption.SoSndbuf, _config.SoSndbuf)
-                .Option(ChannelOption.SoRcvbuf, _config.SoRcvbuf)
-                .Option(ChannelOption.SoReuseaddr, true)
-                .Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
+            ClientWaiter waiter = new ClientWaiter(_timeOut);
+            RpcResponse response = null;
+            IChannel channel = CreateChannel();
+            try
+            {
+                response = GerResponseFromServer(channel, request, waiter);
+                return GetMethodResult(request.MethodName, response);
+            }
+            catch (OperationCanceledException ex)
+            {
+                channel?.CloseAsync();
+                LogService.WriteExceptionAsync(ex, "服务器响应超时", request, response);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.WriteExceptionAsync(ex, "服务器出现异常", request, response);
+                bool removeResult = _clientInvoker.Remove(channel, out string channelId);
+                if (removeResult == false)
                 {
-                    IChannelPipeline pipeline = channel.Pipeline;
-                    //pipeline.AddLast(new IdleStateHandler(0, 0, _config.AllIdleTimeSeconds));
-                    pipeline.AddLast("framing-enc", new LengthFieldPrepender(4));
-                    pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
-                    pipeline.AddLast(handler);
-                }));
-            return bootstrap;
+                    LogService.WriteExceptionAsync(new Exception("移除 channel 失败"), "remove channel", channelId);
+                }
+                throw;
+            }
+            finally
+            {
+                waiter.Dispose();
+            }
+        }
+
+        private IChannel CreateChannel()
+        {
+            IChannel channel;
+            while ((channel = _channelPool.Get()).Open == false) { }
+            return channel;
         }
 
 
-        private ObjectPool<IChannel> InitChannelPool(Bootstrap bootstrap)
+        private RpcResponse GerResponseFromServer(IChannel channel, RpcRequest request, ClientWaiter waiter)
         {
-            ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(bootstrap, _config.RemoteAddress);
-            DefaultObjectPool<IChannel> pool = new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
-            return pool;
+            _clientInvoker.Add(channel, waiter);
+            IByteBuffer buffer = Unpooled.WrappedBuffer(_rpcSerializer.ToBytes(request));
+            channel.WriteAndFlushAsync(buffer);
+            waiter.Wait();
+            _channelPool.Return(channel);
+            return _rpcSerializer.ToObject<RpcResponse>(waiter.Bytes);
         }
 
 
-        private class ChannelPooledObjectPolicy : IPooledObjectPolicy<IChannel>
+        private object GetMethodResult(string methodName, RpcResponse response)
         {
-            private readonly Bootstrap _bootstrap;
-            private readonly IPEndPoint _remoteAddress;
-
-            internal ChannelPooledObjectPolicy(Bootstrap bootstrap, IPEndPoint remoteAddress)
+            if (response.Success == false)
             {
-                _bootstrap = bootstrap;
-                _remoteAddress = remoteAddress;
+                throw new Exception(response.Message);
             }
-
-            public IChannel Create()
-            {
-                //return AsyncHelper1.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
-                return AsyncHelper2.RunSync(() => _bootstrap.ConnectAsync(_remoteAddress));
-            }
-
-            public bool Return(IChannel obj)
-            {
-                return true;
-            }
+            Type returnType = _serviceType.GetMethod(methodName)?.ReturnType;
+            return returnType == typeof(void) ? null : _rpcSerializer.ToObject(response.Data, returnType);
         }
     }
 }

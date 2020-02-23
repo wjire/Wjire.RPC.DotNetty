@@ -6,10 +6,8 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wjire.Log;
-using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty
 {

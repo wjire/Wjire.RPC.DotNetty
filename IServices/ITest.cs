@@ -12,7 +12,7 @@ namespace IServices
 
         string GetString();
     }
-    
+
 
     [MessagePackObject]
     public class Person

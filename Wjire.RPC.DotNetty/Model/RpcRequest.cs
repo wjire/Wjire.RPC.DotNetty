@@ -7,12 +7,15 @@ namespace Wjire.RPC.DotNetty.Model
     public class RpcRequest
     {
         [Key(0)]
-        public string ServiceName { get; set; }
-        [Key(1)]
         public string MethodName { get; set; }
-        [Key(2)]
+
+        [Key(1)]
         public object[] Arguments { get; set; }
-        [Key(3)]
+
+        [Key(2)]
         public Type ServiceType { get; set; }
+
+        //[Key(3)]
+        //public string ServiceName { get; set; }
     }
 }
