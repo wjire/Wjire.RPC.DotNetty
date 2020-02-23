@@ -20,7 +20,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         internal Client(Type serviceType, ClientConfig config, ObjectPool<IChannel> channelPool, ClientInvoker clientInvoker)
         {
-            //Console.WriteLine("Client ctor");
+            Console.WriteLine("Client ctor");
             _serviceType = serviceType;
             _timeOut = config.TimeOut;
             _rpcSerializer = config.RpcSerializer;

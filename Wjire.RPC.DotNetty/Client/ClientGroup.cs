@@ -20,7 +20,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         public ClientGroup(ClientConfig config)
         {
-            //Console.WriteLine("ClientGroup ctor");
+            Console.WriteLine("ClientGroup ctor");
             _config = config;
             IEventLoopGroup group = new MultithreadEventLoopGroup();
             try
@@ -60,8 +60,7 @@ namespace Wjire.RPC.DotNetty.Client
         private ObjectPool<IChannel> CreateChannelPool(Bootstrap bootstrap)
         {
             ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(bootstrap, _config.RemoteAddress);
-            ObjectPool<IChannel> pool = new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
-            return pool;
+            return new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
         }
 
 

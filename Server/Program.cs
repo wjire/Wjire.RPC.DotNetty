@@ -18,13 +18,11 @@ namespace Server
                   .ConfigureServices((hostContext, services) =>
                   {
                       services
-                          //.AddRpcService<ITest, Test>()
-                          //.AddRpcService<IFoo, Foo>()
                           .AddSingleton<ITest, Test>()
                           .AddSingleton<IFoo, Foo>()
-                      //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
-                      //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
-                      .AddHostedService<Wjire.RPC.DotNetty.Server>();
+                        //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
+                        //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
+                          .AddHostedService<Wjire.RPC.DotNetty.Server>();
                   }).UseWindowsService();
         }
     }

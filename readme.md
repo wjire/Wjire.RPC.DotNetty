@@ -59,13 +59,59 @@
 
 服务端
 
-     Server server = new Server(7878);
-     ServiceCollection services = new ServiceCollection();
-     services.AddSingleton<ITest, Test>();
-     server.RegisterServices(services);
-     server.Start().Wait();
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                  .ConfigureServices((hostContext, services) =>
+                  {
+                      services
+                          .AddSingleton<ITest, Test>()
+                        //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
+                        //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();// MessagePack
+                          .AddHostedService<Wjire.RPC.DotNetty.Server>();
+                  }).UseWindowsService();//可做成 windows 服务
+        }
+    }
+
 
 客户端
          
      ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);//内部已做单例
      Person person = client.GetPerson(1);//内部实现为长连接+对象池.
+
+
+Windows 服务常用命令
+
+    注册:
+        
+        @echo off
+        title 0MyService
+        sc delete 0MyService
+        sc create 0MyService binpath= "%~dp0%..\Server.exe" displayname= "0MyService" depend= Tcpip start= auto
+        sc description 0MyService 服务描述
+        pause
+        exit
+
+
+    启动:
+
+        @echo off
+        title 0MyService
+        net start 0MyService
+        pause
+        exit
+
+    停止:
+
+        @echo off
+        title 0MyService
+        net stop 0MyService
+        pause
+        exit
