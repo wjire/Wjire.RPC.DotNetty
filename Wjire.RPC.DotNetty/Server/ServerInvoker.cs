@@ -11,31 +11,13 @@ namespace Wjire.RPC.DotNetty
     {
         private readonly IRpcSerializer _serializer;
         private readonly IServiceProvider _serviceProvider;
-        //private readonly Dictionary<string, Type> _servicesMap = new Dictionary<string, Type>();
-
-        //internal ServerInvoker(IRpcSerializer serializer, IServiceCollection services)
-        //{
-        //    _serializer = serializer;
-        //    //InitServicesMap(services);
-        //}
 
         internal ServerInvoker(IServiceProvider serviceProvider)
         {
             _serializer = serviceProvider.GetService<IRpcSerializer>() ?? new RpcJsonSerializer();
             _serviceProvider = serviceProvider;
-            //InitServicesMap(services);
         }
-
-        //private void InitServicesMap(IServiceCollection services)
-        //{
-        //    foreach (ServiceDescriptor service in services)
-        //    {
-        //        _servicesMap.Add(service.ServiceType.FullName, service.ServiceType);
-        //    }
-        //    _serviceProvider = services.BuildServiceProvider();
-        //}
-
-
+        
         internal byte[] GetResponseBytes(byte[] requestBytes)
         {
             RpcRequest request = null;
@@ -57,13 +39,7 @@ namespace Wjire.RPC.DotNetty
 
         private byte[] GetResponseBytes(RpcRequest request)
         {
-            //if (_servicesMap.TryGetValue(request.ServiceName, out Type serviceType) == false)
-            //{
-            //    throw new ArgumentException($"not find the service : {request.ServiceName}");
-            //}
-
             object service = _serviceProvider.GetService(request.ServiceType);
-
             MethodInfo methodInfo = service.GetType().GetMethod(request.MethodName);
             if (methodInfo == null)
             {
@@ -77,28 +53,7 @@ namespace Wjire.RPC.DotNetty
                 Success = true
             });
         }
-
-
-        //private byte[] GetResponseBytes(RpcRequest request)
-        //{
-        //    if (_servicesMap.TryGetValue(request.ServiceName, out Type serviceType) == false)
-        //    {
-        //        throw new ArgumentException($"not find the service : {request.ServiceName}");
-        //    }
-        //    MethodInfo methodInfo = serviceType.GetMethod(request.MethodName);
-        //    if (methodInfo == null)
-        //    {
-        //        throw new ArgumentException($"not find the method:{request.MethodName} on service:{request.ServiceName}");
-        //    }
-        //    CheckArguments(request.Arguments, methodInfo.GetParameters());
-        //    object service = _serviceProvider.GetService(serviceType);
-        //    object result = methodInfo.Invoke(service, request.Arguments);
-        //    return _serializer.ToBytes(new RpcResponse
-        //    {
-        //        Data = result,
-        //        Success = true
-        //    });
-        //}
+        
 
         private void CheckArguments(object[] arguments, ParameterInfo[] parameters)
         {

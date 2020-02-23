@@ -11,8 +11,8 @@ namespace Wjire.RPC.DotNetty.Client
         public int PooledObjectMax { get; set; } = Environment.ProcessorCount * 2;
         public int SoSndbuf { get; set; } = 64 * 1024;
         public int SoRcvbuf { get; set; } = 64 * 1024;
-        public IRpcSerializer RpcSerializer { get; set; } = new RpcJsonSerializer();
         internal IPEndPoint RemoteAddress { get; }
+        internal IRpcSerializer RpcSerializer { get; set; } = new RpcJsonSerializer();
 
         public ClientConfig(string ipString, int port)
         {

@@ -101,6 +101,8 @@
      Person person = client.GetPerson(1);//内部实现为长连接+对象池.
 
 
+可以用控制台,也可以做成windows服务.
+
 Windows 服务常用命令
 
     注册:

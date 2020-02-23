@@ -15,6 +15,7 @@ namespace Wjire.RPC.DotNetty.Model
         [Key(2)]
         public Type ServiceType { get; set; }
 
+        //传类型名称,操作起来不适很优雅,改用直接传类型
         //[Key(3)]
         //public string ServiceName { get; set; }
     }
