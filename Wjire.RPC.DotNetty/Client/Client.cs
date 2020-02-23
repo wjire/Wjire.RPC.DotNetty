@@ -45,7 +45,8 @@ namespace Wjire.RPC.DotNetty.Client
             {
                 MethodName = binder.Name,
                 Arguments = args,
-                ServiceName = _serviceType.FullName
+                //ServiceName = _serviceType.FullName,
+                ServiceType = _serviceType,
             };
             result = _clientInvoker.GetResponse(_serviceType, request, _config.TimeOut);
             return true;

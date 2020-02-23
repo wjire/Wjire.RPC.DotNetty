@@ -14,9 +14,23 @@ namespace Client
 
         private static void Main(string[] args)
         {
-            Test2(1);
+            //Person p = new Person();
+            //var type = p.GetType();
+            //var typeJson = JsonConvert.SerializeObject(type);
+            //Console.WriteLine(Encoding.UTF8.GetBytes(typeJson).Length);
+            //Console.WriteLine(Encoding.UTF8.GetBytes(type.FullName).Length);
+            //Console.WriteLine(typeJson);
+            //Console.WriteLine(type.Name);
+            //Console.WriteLine(type.FullName);
+            //var t = JsonConvert.DeserializeObject<Type>(typeJson);
+            //Console.WriteLine(t == type);
+
+
+
+            Test2(111);
             Console.ReadKey();
-            Test3(3);
+            Test3(311);
+
             //List<Person> persons = new List<Person>();
             //for (int i = 0; i < 10000; i++)
             //{
@@ -24,8 +38,9 @@ namespace Client
             //}
             //string json = JsonConvert.SerializeObject(persons);
             //Console.WriteLine(Encoding.UTF8.GetBytes(json).Length);
-
-
+            //var test = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+            //var c = test.GetCount(persons);
+            //Console.WriteLine(c);
 
 
             //ITest test = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
@@ -58,7 +73,7 @@ namespace Client
                 //}
                 //Console.WriteLine("over");
             }
-
+            Console.WriteLine("over");
             Console.ReadKey();
         }
 

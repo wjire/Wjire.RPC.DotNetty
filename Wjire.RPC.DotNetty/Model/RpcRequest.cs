@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using System;
+using MessagePack;
 
 namespace Wjire.RPC.DotNetty.Model
 {
@@ -11,5 +12,7 @@ namespace Wjire.RPC.DotNetty.Model
         public string MethodName { get; set; }
         [Key(2)]
         public object[] Arguments { get; set; }
+        [Key(3)]
+        public Type ServiceType { get; set; }
     }
 }

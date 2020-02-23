@@ -6,6 +6,7 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wjire.Log;
 using Wjire.RPC.DotNetty.Serializer;
@@ -20,20 +21,18 @@ namespace Wjire.RPC.DotNetty
         private IChannel _channel;
         private ServerBootstrap _bootstrap;
         private bool _isClosed;
-        private const string ServerConfig = "ServerConfig";
+        private const string ServerConfigKeyInAppSettings = "ServerConfig";
+        private const string StartupLogs = "Logs\\StartupLogs";
 
-        public Server(IConfiguration configuration) : this(configuration, new RpcJsonSerializer()) { }
-
-
-        public Server(IConfiguration configuration, IRpcSerializer rpcSerializer)
+        public Server(IConfiguration configuration, IServiceProvider provider)
         {
             try
             {
-                Init(configuration, rpcSerializer);
+                Init(configuration, provider);
             }
             catch (Exception ex)
             {
-                LogService.WriteText("构建服务异常:" + ex);
+                LogService.WriteText("构建服务异常:" + ex, StartupLogs);
                 Task.WaitAll(_client?.ShutdownGracefullyAsync(), _acceptor?.ShutdownGracefullyAsync());
                 _client = null;
                 _acceptor = null;
@@ -41,13 +40,12 @@ namespace Wjire.RPC.DotNetty
             }
         }
 
-        private void Init(IConfiguration configuration, IRpcSerializer rpcSerializer)
+        private void Init(IConfiguration configuration, IServiceProvider provider)
         {
-            LogService.WriteText("开始初始化服务!");
-
-            ServerConfig serverConfig = configuration.GetSection(ServerConfig).Get<ServerConfig>();
+            LogService.WriteText("开始初始化服务!", StartupLogs);
+            ServerConfig serverConfig = configuration.GetSection(ServerConfigKeyInAppSettings).Get<ServerConfig>();
             _port = serverConfig.Port;
-            ServerInvoker invoker = new ServerInvoker(rpcSerializer, RpcServiceCollection.Singleton);
+            ServerInvoker invoker = new ServerInvoker(provider);
             ServerHandler handler = new ServerHandler(invoker);
             _acceptor = new MultithreadEventLoopGroup(serverConfig.AcceptorEventLoopCount);
             _client = new MultithreadEventLoopGroup(serverConfig.ClientEventLoopCount);
@@ -67,7 +65,7 @@ namespace Wjire.RPC.DotNetty
                     pipeline.AddLast(handler);
                 }));
 
-            LogService.WriteText("服务初始化完成!");
+            LogService.WriteText("服务初始化完成!", StartupLogs);
         }
 
 
@@ -75,13 +73,13 @@ namespace Wjire.RPC.DotNetty
         {
             try
             {
-                LogService.WriteText("开始启动服务!");
+                LogService.WriteText("开始启动服务!", StartupLogs);
                 _channel = await _bootstrap.BindAsync(_port);
-                LogService.WriteText($"服务已启动,端口号 : {_port}");
+                LogService.WriteText($"服务已启动,端口号 : {_port}", StartupLogs);
             }
             catch (Exception ex)
             {
-                LogService.WriteText("启动服务发生异常:" + ex);
+                LogService.WriteText("启动服务发生异常:" + ex, StartupLogs);
                 cancellationToken.ThrowIfCancellationRequested();
             }
         }
@@ -98,7 +96,7 @@ namespace Wjire.RPC.DotNetty
             {
                 return;
             }
-            LogService.WriteText("开始关闭服务");
+            LogService.WriteText("开始关闭服务", StartupLogs);
             try
             {
                 Task.WaitAll
@@ -108,11 +106,11 @@ namespace Wjire.RPC.DotNetty
                 _acceptor?.ShutdownGracefullyAsync()
                 );
                 _isClosed = true;
-                LogService.WriteText("服务已关闭!");
+                LogService.WriteText("服务已关闭!", StartupLogs);
             }
             catch (Exception ex)
             {
-                LogService.WriteText("服务关闭发生异常:" + ex);
+                LogService.WriteText("服务关闭发生异常:" + ex, StartupLogs);
             }
         }
     }

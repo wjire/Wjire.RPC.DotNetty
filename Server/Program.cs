@@ -1,8 +1,12 @@
-﻿using IServices;
+﻿using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using IServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services;
 using Wjire.RPC.DotNetty;
+using Wjire.RPC.DotNetty.Serializer;
 
 namespace Server
 {
@@ -18,10 +22,14 @@ namespace Server
             return Host.CreateDefaultBuilder(args)
                   .ConfigureServices((hostContext, services) =>
                   {
-                      services.AddRpcService<ITest, Test>();
-                      //services.AddSingleton<IRpcSerializer, RpcJsonSerializer>();//默认就是 Json
-                      //services.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
-                      services.AddHostedService<Wjire.RPC.DotNetty.Server>();
+                      services
+                          //.AddRpcService<ITest, Test>()
+                          //.AddRpcService<IFoo, Foo>()
+                          .AddSingleton<ITest, Test>()
+                          .AddSingleton<IFoo, Foo>()
+                      //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
+                      //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
+                      .AddHostedService<Wjire.RPC.DotNetty.Server>();
                   }).UseWindowsService();
         }
     }

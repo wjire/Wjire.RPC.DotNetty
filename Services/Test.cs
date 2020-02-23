@@ -21,5 +21,10 @@ namespace Services
         {
             return persons.Count;
         }
+
+        public string GetString()
+        {
+            return Guid.NewGuid().ToString();
+        }
     }
 }

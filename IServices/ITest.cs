@@ -9,8 +9,10 @@ namespace IServices
         Person GetPerson(int id);
 
         int GetCount(List<Person> persons);
-    }
 
+        string GetString();
+    }
+    
 
     [MessagePackObject]
     public class Person
