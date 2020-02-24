@@ -14,7 +14,7 @@ namespace Wjire.RPC.DotNetty.Client
         {
             _clientInvoker = clientInvoker;
         }
-        
+
         public override bool IsSharable => true;
 
         protected override void ChannelRead0(IChannelHandlerContext context, IByteBuffer message)

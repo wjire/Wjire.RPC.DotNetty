@@ -52,9 +52,9 @@ namespace Client
 
 
 
-            Test2(1111);
-            //Console.ReadKey();
-            Test3(3111);
+            Test2(11111);
+            Console.ReadKey();
+            Test3(31111);
 
             Console.WriteLine("over");
             Console.ReadKey();
@@ -85,7 +85,7 @@ namespace Client
                 tasks[i] = Task.Run(() =>
                 {
                     Person person = client.GetPerson(id);
-                    //Console.WriteLine(JsonConvert.SerializeObject(person));
+                    Console.WriteLine(JsonConvert.SerializeObject(person));
                 });
             }
             Task.WaitAll(tasks);
@@ -93,11 +93,11 @@ namespace Client
 
         private static void Test3(int count)
         {
-            ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
             for (int i = 0; i < count; i++)
             {
+                ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
                 Person person = client.GetPerson(i);
-                //Console.WriteLine(JsonConvert.SerializeObject(person));
+                Console.WriteLine(JsonConvert.SerializeObject(person));
             }
         }
     }

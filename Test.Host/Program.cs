@@ -1,12 +1,11 @@
-﻿using System;
-using IServices;
+﻿using IServices;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Test.Host
 {
-    class Program
+    internal class Program
     {
         private static void Main(string[] args)
         {

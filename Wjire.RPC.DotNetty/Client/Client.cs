@@ -34,7 +34,7 @@ namespace Wjire.RPC.DotNetty.Client
             {
                 MethodName = binder.Name,
                 Arguments = args,
-                ServiceType = _serviceType,
+                ServiceContractFullName = _serviceType.FullName,
             };
             result = GetReturnValue(request);
             return true;

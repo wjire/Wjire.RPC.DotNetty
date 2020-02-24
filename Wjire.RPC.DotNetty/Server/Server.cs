@@ -22,11 +22,11 @@ namespace Wjire.RPC.DotNetty
         private const string ServerConfigKeyInAppSettings = "ServerConfig";
         private const string StartupLogs = "Logs\\StartupLogs";
 
-        public Server(IConfiguration configuration, IServiceProvider provider)
+        public Server(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             try
             {
-                Init(configuration, provider);
+                Init(configuration, serviceProvider);
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace Wjire.RPC.DotNetty
             }
         }
 
-        private void Init(IConfiguration configuration, IServiceProvider provider)
+        private void Init(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             LogService.WriteText("开始初始化服务!", StartupLogs);
             ServerConfig serverConfig = configuration.GetSection(ServerConfigKeyInAppSettings).Get<ServerConfig>();
@@ -47,8 +47,8 @@ namespace Wjire.RPC.DotNetty
                 throw new ArgumentException("未在配置文件中读取到 ServerConfig 节点");
             }
             _port = serverConfig.Port;
-            ServerInvoker invoker = new ServerInvoker(provider);
-            ServerHandler handler = new ServerHandler(invoker);
+            MessageHandler messageHandler = new MessageHandler(serviceProvider);
+            ServerHandler serverHandler = new ServerHandler(messageHandler);
             _acceptor = new MultithreadEventLoopGroup(serverConfig.AcceptorEventLoopCount);
             _client = new MultithreadEventLoopGroup(serverConfig.ClientEventLoopCount);
             // 服务器引导程序
@@ -64,7 +64,7 @@ namespace Wjire.RPC.DotNetty
                     IChannelPipeline pipeline = channel.Pipeline;
                     pipeline.AddLast("framing-enc", new LengthFieldPrepender(4));
                     pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(serverConfig.MaxFrameLength, 0, 4, 0, 4));
-                    pipeline.AddLast(handler);
+                    pipeline.AddLast(serverHandler);
                 }));
 
             LogService.WriteText("服务初始化完成!", StartupLogs);
@@ -78,6 +78,7 @@ namespace Wjire.RPC.DotNetty
                 LogService.WriteText("开始启动服务!", StartupLogs);
                 _channel = await _bootstrap.BindAsync(_port);
                 LogService.WriteText($"服务已启动,端口号 : {_port}", StartupLogs);
+                Console.WriteLine($"服务已启动,端口号 : {_port}");
             }
             catch (Exception ex)
             {

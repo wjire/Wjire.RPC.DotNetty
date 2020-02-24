@@ -20,8 +20,8 @@ namespace Server
                       services
                           .AddSingleton<ITest, Test>()
                           .AddSingleton<IFoo, Foo>()
-                        //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
-                        //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
+                          //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
+                          //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
                           .AddHostedService<Wjire.RPC.DotNetty.Server>();
                   }).UseWindowsService();
         }

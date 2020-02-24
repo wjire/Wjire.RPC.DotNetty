@@ -8,11 +8,11 @@ namespace Wjire.RPC.DotNetty
 
     internal class ServerHandler : SimpleChannelInboundHandler<IByteBuffer>
     {
-        private readonly ServerInvoker _serverInvoker;
+        private readonly MessageHandler _messageHandler;
         private const string HEARTBEAT = "HEARTBEAT";
-        internal ServerHandler(ServerInvoker serverInvoker)
+        internal ServerHandler(MessageHandler messageHandler)
         {
-            _serverInvoker = serverInvoker;
+            _messageHandler = messageHandler;
         }
 
         public override bool IsSharable => true;
@@ -21,7 +21,7 @@ namespace Wjire.RPC.DotNetty
         {
             byte[] bytes = new byte[msg.ReadableBytes];
             msg.ReadBytes(bytes);
-            byte[] buffer = _serverInvoker.GetResponseBytes(bytes);
+            byte[] buffer = _messageHandler.GetResponseBytes(bytes);
             ctx.WriteAndFlushAsync(Unpooled.WrappedBuffer(buffer));
         }
 
@@ -37,7 +37,7 @@ namespace Wjire.RPC.DotNetty
         //    }
         //    else
         //    {
-        //        byte[] buffer = _serverInvoker.GetResponseBytes(requestString);
+        //        byte[] buffer = _messageHandler.GetResponseBytes(requestString);
         //        IByteBuffer wrappedBuffer = Unpooled.WrappedBuffer(buffer);
         //        ctx.WriteAndFlushAsync(wrappedBuffer);
         //    }

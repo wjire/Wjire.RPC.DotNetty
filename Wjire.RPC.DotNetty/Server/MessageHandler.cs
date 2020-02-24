@@ -7,17 +7,17 @@ using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty
 {
-    internal class ServerInvoker
+    internal class MessageHandler
     {
         private readonly IRpcSerializer _serializer;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly RpcServiceCollection _rpcServiceCollection;
 
-        internal ServerInvoker(IServiceProvider serviceProvider)
+        internal MessageHandler(IServiceProvider serviceProvider)
         {
             _serializer = serviceProvider.GetService<IRpcSerializer>() ?? new RpcJsonSerializer();
-            _serviceProvider = serviceProvider;
+            _rpcServiceCollection = new RpcServiceCollection(serviceProvider);
         }
-        
+
         internal byte[] GetResponseBytes(byte[] requestBytes)
         {
             RpcRequest request = null;
@@ -39,21 +39,16 @@ namespace Wjire.RPC.DotNetty
 
         private byte[] GetResponseBytes(RpcRequest request)
         {
-            object service = _serviceProvider.GetService(request.ServiceType);
-            MethodInfo methodInfo = service.GetType().GetMethod(request.MethodName);
-            if (methodInfo == null)
-            {
-                throw new ArgumentException($"not find the method:{request.MethodName} on service:{request.ServiceType.FullName}");
-            }
+            (object rpcService, MethodInfo methodInfo) = _rpcServiceCollection.FindRpcServiceAndRequestMethod(request);
             CheckArguments(request.Arguments, methodInfo.GetParameters());
-            object result = methodInfo.Invoke(service, request.Arguments);
+            object result = methodInfo.Invoke(rpcService, request.Arguments);
             return _serializer.ToBytes(new RpcResponse
             {
                 Data = result,
                 Success = true
             });
         }
-        
+
 
         private void CheckArguments(object[] arguments, ParameterInfo[] parameters)
         {

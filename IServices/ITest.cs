@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ServiceModel;
 using MessagePack;
 
 namespace IServices
 {
+    [ServiceContract]
     public interface ITest
     {
         Person GetPerson(int id);

@@ -10,10 +10,4 @@
     <ProjectReference Include="..\Wjire.RPC.DotNetty\Wjire.RPC.DotNetty.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="IServices">
-      <HintPath>IServices.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
