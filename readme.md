@@ -19,6 +19,11 @@
     "Wjire.Log" Version="1.0.3"
 
 
+1个 ip:port 代表1个 ClientGroup.
+1个服务器契约类型代表1个 Client.
+1个 ClientGroup 可以有多个 Client.
+1个 ClientGroup 使用同一个 ChannelPool.
+
 一.服务端启动时:
 
     1.通过 IConfiguration 加载配置文件;
@@ -39,7 +44,7 @@
         }
 
 三.客户端发起请求:
-    通过连接池获取 DotNetty 的 Channel,发起请求并调用 ClientWaiter 等待返回结果.若超时,则抛出异常.
+    通过 ChannelPool 获取 DotNetty 的 Channel,发起请求并调用 ClientWaiter 等待返回结果.若超时,则抛出异常.
 
 四.服务端收到请求后,根据请求消息中的 ServiceContractFullName 找到服务器契约的 Type,再通过微软自带的DI容器得到 service.然后根据请求消息中的 MethodName 及 Arguments,通过反射,调用 service 的方法得到结果并返回客户端.
 
@@ -53,8 +58,8 @@
         }
 
 五.客户端收到服务端的返回消息后:
-    1.将 Channel 放回连接池;
-    2.根据消息实体中的 Data 及请求的 MethodName,保存的服务契约的 Type,通过反射将 Data 转换成实际类型.
+    1.将 Channel 放回 ChannelPool;
+    2.根据请求的服务契约的 Type 及 MethodName,通过反射得到该方法的返回值类型,然后将服务端返回的消息实体中 Data 反序列化成实际类型.
 
 
 示例:
@@ -173,4 +178,4 @@
     客户端
          
          ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);//内部已做单例
-         Person person = client.GetPerson(1);//内部实现为长连接+对象池.
+         Person person = client.GetPerson(1);
