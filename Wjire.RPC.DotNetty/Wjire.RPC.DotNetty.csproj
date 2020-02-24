@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>wjire</Authors>
     <Description>基于DotNetty的轻量级RPC框架</Description>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
