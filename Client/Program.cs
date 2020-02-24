@@ -14,6 +14,14 @@ namespace Client
 
         private static void Main(string[] args)
         {
+
+            var count = 1;
+            Test3(count);
+
+
+
+
+
             //Person p = new Person();
             //var type = p.GetType();
             //var typeJson = JsonConvert.SerializeObject(type);
@@ -25,36 +33,38 @@ namespace Client
             //var t = JsonConvert.DeserializeObject<Type>(typeJson);
             //Console.WriteLine(t == type);
 
-            ITest test1 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
-            ITest test2 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
-            ITest test3 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
-            ITest test4 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
-            IFoo foo1 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
-            IFoo foo2 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
-            IFoo foo3 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
-            IFoo foo4 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
-
-            List<Person> persons = new List<Person>();
-            for (int i = 0; i < 10000; i++)
             {
-                persons.Add(new Person { Date = DateTime.Now, Name = "wjire" + i, Id = i, Money = i });
+                //ITest test1 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+                //ITest test2 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+                //ITest test3 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+                //ITest test4 = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+                //IFoo foo1 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
+                //IFoo foo2 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
+                //IFoo foo3 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
+                //IFoo foo4 = ClientFactory.GetClient<IFoo>("127.0.0.1", 9999);
+
+                //List<Person> persons = new List<Person>();
+                //for (int i = 0; i < 10000; i++)
+                //{
+                //    persons.Add(new Person { Date = DateTime.Now, Name = "wjire" + i, Id = i, Money = i });
+                //}
+
+                //int r1 = test1.GetCount(persons);
+                //Person r2 = test2.GetPerson(1);
+                //Console.WriteLine(r1);
+                //Console.WriteLine(JsonConvert.SerializeObject(r2));
+                //Console.WriteLine();
+                //Person r3 = foo1.Get();
+                //Console.WriteLine(JsonConvert.SerializeObject(r3));
+                //Console.WriteLine(JsonConvert.SerializeObject(foo2.Get()));
+                //Console.WriteLine(JsonConvert.SerializeObject(foo3.Get()));
+
+
+
+                //Test2(11111);
+                //Console.ReadKey();
+                //Test3(31111);
             }
-
-            int r1 = test1.GetCount(persons);
-            Person r2 = test2.GetPerson(1);
-            Console.WriteLine(r1);
-            Console.WriteLine(JsonConvert.SerializeObject(r2));
-            Console.WriteLine();
-            Person r3 = foo1.Get();
-            Console.WriteLine(JsonConvert.SerializeObject(r3));
-            Console.WriteLine(JsonConvert.SerializeObject(foo2.Get()));
-            Console.WriteLine(JsonConvert.SerializeObject(foo3.Get()));
-
-
-
-            Test2(11111);
-            Console.ReadKey();
-            Test3(31111);
 
             Console.WriteLine("over");
             Console.ReadKey();
@@ -77,7 +87,7 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
-            ClientConfig config = new ClientConfig("127.0.0.1", 9999);
+            ClientConfig config = new ClientConfig();
             for (int i = 0; i < tasks.Length; i++)
             {
                 ITest client = ClientFactory.GetClient<ITest>(config);
@@ -95,7 +105,7 @@ namespace Client
         {
             for (int i = 0; i < count; i++)
             {
-                ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+                ITest client = ClientFactory.GetClient<ITest>();
                 Person person = client.GetPerson(i);
                 Console.WriteLine(JsonConvert.SerializeObject(person));
             }

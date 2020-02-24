@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Net;
+using Wjire.RPC.DotNetty.Helper;
 
 namespace Wjire.RPC.DotNetty.Client
 {
@@ -8,9 +10,21 @@ namespace Wjire.RPC.DotNetty.Client
         private static readonly ConcurrentDictionary<string, Lazy<ClientGroup>> ClientGroups =
             new ConcurrentDictionary<string, Lazy<ClientGroup>>();
 
-        public static T GetClient<T>(string ipString, int port) where T : class
+
+        public static T GetClient<T>() where T : class
         {
-            return GetClient<T>(new ClientConfig(ipString, port));
+            ClientConfig clientConfig = ConfigurationHelper.GetClientConfig();
+            return GetClient<T>(clientConfig);
+        }
+
+
+        public static T GetClient<T>(string ip, int port) where T : class
+        {
+            return GetClient<T>(new ClientConfig
+            {
+                Ip = ip,
+                Port = port
+            });
         }
 
 
@@ -23,7 +37,11 @@ namespace Wjire.RPC.DotNetty.Client
 
         private static ClientGroup GetClientGroup(ClientConfig config)
         {
-            string key = $"{config.RemoteAddress}";
+            if (string.IsNullOrWhiteSpace(config.Ip) || config.Port == 0)
+            {
+                throw new ArgumentNullException("ip or port is null");
+            }
+            string key = $"{config.Ip}:{config.Port}";
             Lazy<ClientGroup> group = ClientGroups.GetOrAdd(key, k =>
             {
                 return new Lazy<ClientGroup>(() => new ClientGroup(config));

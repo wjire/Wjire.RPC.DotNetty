@@ -44,7 +44,7 @@ namespace Wjire.RPC.DotNetty
             ServerConfig serverConfig = configuration.GetSection(ServerConfigKeyInAppSettings).Get<ServerConfig>();
             if (serverConfig == null)
             {
-                throw new ArgumentException("未在配置文件中读取到 ServerConfig 节点");
+                throw new ArgumentException($"未在配置文件中读取到 {ServerConfigKeyInAppSettings} 节点");
             }
             _port = serverConfig.Port;
             MessageHandler messageHandler = new MessageHandler(serviceProvider);

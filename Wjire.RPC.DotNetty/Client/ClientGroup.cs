@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Net;
 using DotNetty.Codecs;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
@@ -59,7 +60,8 @@ namespace Wjire.RPC.DotNetty.Client
 
         private ObjectPool<IChannel> CreateChannelPool(Bootstrap bootstrap)
         {
-            ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(bootstrap, _config.RemoteAddress);
+            var remoteAddress = new IPEndPoint(IPAddress.Parse(_config.Ip), _config.Port);
+            ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(bootstrap, remoteAddress);
             return new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
         }
 

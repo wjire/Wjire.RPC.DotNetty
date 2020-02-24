@@ -6,17 +6,22 @@ namespace Wjire.RPC.DotNetty.Client
 {
     public class ClientConfig
     {
+        public string Ip { get; set; }
+
+        public int Port { get; set; }
+
         public TimeSpan TimeOut { get; set; } = TimeSpan.FromSeconds(5);
-        //public int AllIdleTimeSeconds { get; set; } = 60 * 5;
+
         public int PooledObjectMax { get; set; } = Environment.ProcessorCount * 2;
+
         public int SoSndbuf { get; set; } = 64 * 1024;
+
         public int SoRcvbuf { get; set; } = 64 * 1024;
-        internal IPEndPoint RemoteAddress { get; }
+
         internal IRpcSerializer RpcSerializer { get; set; } = new RpcJsonSerializer();
 
-        public ClientConfig(string ipString, int port)
-        {
-            RemoteAddress = new IPEndPoint(IPAddress.Parse(ipString), port);
-        }
+        //public int AllIdleTimeSeconds { get; set; } = 60 * 5;
+
+
     }
 }
