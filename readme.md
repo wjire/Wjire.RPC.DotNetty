@@ -2,8 +2,8 @@
 
 框    架:   .NET Standard 2.0
 
-    "DotNetty.Codecs" Version="0.6.0"
-    "DotNetty.Transport" Version="0.6.0"
+    DotNetty.Codecs Version="0.6.0"
+    DotNetty.Transport Version=0.6.0
     "ImpromptuInterface" Version="7.0.1"
     "MessagePack" Version="2.1.90"
     "Microsoft.Extensions.Hosting" Version="3.1.2"
@@ -37,6 +37,8 @@
             public object[] Arguments { get; set; }
             public string ServiceContractFullName { get; set; }
         }
+
+三.
 
 三.服务端收到请求后,根据请求消息中的 ServiceContractFullName 找到服务器契约的 Type,再通过微软自带的DI容器得到 service.然后根据请求消息中的 MethodName 及 Arguments,通过反射,调用 service 的方法得到结果并返回客户端.
 
