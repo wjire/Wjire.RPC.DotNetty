@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using Wjire.RPC.DotNetty.Serializer;
 
 namespace Wjire.RPC.DotNetty.Client
@@ -10,7 +9,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         public int Port { get; set; }
 
-        public TimeSpan TimeOut { get; set; } = TimeSpan.FromSeconds(5);
+        public int TimeOut { get; set; } = 5;
 
         public int PooledObjectMax { get; set; } = Environment.ProcessorCount * 2;
 

@@ -176,6 +176,8 @@
             exit
 
     客户端
-         
-         ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);//内部已做单例
+         //内部已做单例
+         ITest client = ClientFactory.GetClient<ITest>();//默认读取配置文件,优先级,appsettings.Development.json > appsettings.json
+         //ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
+         //ITest client = ClientFactory.GetClient<ITest>(new ClientConfig{...});
          Person person = client.GetPerson(1);

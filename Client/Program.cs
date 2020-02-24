@@ -15,7 +15,7 @@ namespace Client
         private static void Main(string[] args)
         {
 
-            var count = 1;
+            int count = 1;
             Test3(count);
 
 

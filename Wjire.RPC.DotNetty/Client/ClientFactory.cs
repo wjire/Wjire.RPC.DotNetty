@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Net;
 using Wjire.RPC.DotNetty.Helper;
 
 namespace Wjire.RPC.DotNetty.Client

@@ -60,7 +60,7 @@ namespace Wjire.RPC.DotNetty.Client
 
         private ObjectPool<IChannel> CreateChannelPool(Bootstrap bootstrap)
         {
-            var remoteAddress = new IPEndPoint(IPAddress.Parse(_config.Ip), _config.Port);
+            IPEndPoint remoteAddress = new IPEndPoint(IPAddress.Parse(_config.Ip), _config.Port);
             ChannelPooledObjectPolicy policy = new ChannelPooledObjectPolicy(bootstrap, remoteAddress);
             return new DefaultObjectPool<IChannel>(policy, _config.PooledObjectMax);
         }

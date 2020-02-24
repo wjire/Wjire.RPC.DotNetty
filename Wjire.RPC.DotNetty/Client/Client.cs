@@ -13,16 +13,16 @@ namespace Wjire.RPC.DotNetty.Client
     {
         private readonly Type _serviceType;
         private readonly TimeSpan _timeOut;
-        private readonly IRpcSerializer _rpcSerializer;
         private readonly ObjectPool<IChannel> _channelPool;
         private readonly ClientInvoker _clientInvoker;
+        private readonly IRpcSerializer _rpcSerializer;
 
 
         internal Client(Type serviceType, ClientConfig config, ObjectPool<IChannel> channelPool, ClientInvoker clientInvoker)
         {
             Console.WriteLine("Client ctor");
             _serviceType = serviceType;
-            _timeOut = config.TimeOut;
+            _timeOut = TimeSpan.FromSeconds(config.TimeOut);
             _rpcSerializer = config.RpcSerializer;
             _channelPool = channelPool;
             _clientInvoker = clientInvoker;
