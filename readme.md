@@ -2,23 +2,22 @@
 
 框    架:   .NET Standard 2.0
 
-  <ItemGroup>
-    <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
-    <PackageReference Include="DotNetty.Transport" Version="0.6.0" />
-    <PackageReference Include="ImpromptuInterface" Version="7.0.1" />
-    <PackageReference Include="MessagePack" Version="2.1.90" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
-    <PackageReference Include="Wjire.Log" Version="1.0.3" />
-  </ItemGroup>
+    "DotNetty.Codecs" Version="0.6.0"
+    "DotNetty.Transport" Version="0.6.0"
+    "ImpromptuInterface" Version="7.0.1"
+    "MessagePack" Version="2.1.90"
+    "Microsoft.Extensions.Hosting" Version="3.1.2"
+    "Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2"
+    "Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.2"
+    "Microsoft.Extensions.Configuration" Version="3.1.2"
+    "Microsoft.Extensions.Configuration.Binder" Version="3.1.2"
+    "Microsoft.Extensions.DependencyInjection" Version="3.1.2"
+    "Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2"
+    "Microsoft.Extensions.ObjectPool" Version="3.1.2"
+    "Newtonsoft.Json" Version="12.0.3"
+    "System.ServiceModel.Primitives" Version="4.7.0"
+    "Wjire.Log" Version="1.0.3"
+
 
 一.服务端启动时:
 
@@ -28,7 +27,7 @@
 二.客户端发起请求前:
 
     1.保存本次调用的服务契约的 Type.
-    2.构造一个 ClientWaiter ,内部封装了一个信号量 ManualResetEventSlim ,并设置了超时时间 TimeOut
+    2.构造一个 ClientWaiter ,内部封装了一个信号量 ManualResetEventSlim ,并设置了超时时间 TimeOut.
 
     客户端发起请求时传递给服务端的消息实体:
 
@@ -91,7 +90,6 @@
                     Id = id,
                     Name = Guid.NewGuid().ToString(),
                     Date = DateTime.Now,
-                    Money = 12000M,
                 };
             }
         }
