@@ -2,8 +2,8 @@
 
 框    架:   .NET Standard 2.0
 
-    DotNetty.Codecs Version="0.6.0"
-    DotNetty.Transport Version=0.6.0
+    "DotNetty.Codecs" Version="0.6.0"
+    "DotNetty.Transport" Version="0.6.0"
     "ImpromptuInterface" Version="7.0.1"
     "MessagePack" Version="2.1.90"
     "Microsoft.Extensions.Hosting" Version="3.1.2"
@@ -38,9 +38,10 @@
             public string ServiceContractFullName { get; set; }
         }
 
-三.
+三.客户端发起请求:
+    通过连接池获取 DotNetty 的 Channel,发起请求并调用 ClientWaiter 等待返回结果.若超时,则抛出异常.
 
-三.服务端收到请求后,根据请求消息中的 ServiceContractFullName 找到服务器契约的 Type,再通过微软自带的DI容器得到 service.然后根据请求消息中的 MethodName 及 Arguments,通过反射,调用 service 的方法得到结果并返回客户端.
+四.服务端收到请求后,根据请求消息中的 ServiceContractFullName 找到服务器契约的 Type,再通过微软自带的DI容器得到 service.然后根据请求消息中的 MethodName 及 Arguments,通过反射,调用 service 的方法得到结果并返回客户端.
 
     服务端返回的消息实体:
 
@@ -51,7 +52,9 @@
             public object Data { get; set; }
         }
 
-四.客户端收到服务端的返回消息后,根据消息实体中的 Data 及请求的 MethodName,保存的服务契约的 Type,通过反射将 Data 转换成实际类型.
+五.客户端收到服务端的返回消息后:
+    1.将 Channel 放回连接池;
+    2.根据消息实体中的 Data 及请求的 MethodName,保存的服务契约的 Type,通过反射将 Data 转换成实际类型.
 
 
 示例:
