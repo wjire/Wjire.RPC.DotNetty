@@ -83,7 +83,7 @@ example:
                       //启动服务两种方式
                       //.AddRpcServer(x=>x.Port = 7878);
                       .AddRpcServer();//读取配置文件
-              }).UseWindowsService();
+              }).UseWindowsService();//可做成windows服务
     }
 
 
