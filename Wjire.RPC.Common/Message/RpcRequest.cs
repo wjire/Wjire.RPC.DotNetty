@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace Wjire.RPC.Model
+namespace Wjire.RPC.Common.Message
 {
     [MessagePackObject]
     public class RpcRequest

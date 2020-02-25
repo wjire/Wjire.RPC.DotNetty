@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>The server of Light-weight RPC Frameworks based on DotNetty.基于DotNetty的轻量级RPC框架服务端</Description>
+    <Authors>wjire</Authors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,11 +14,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Wjire.RPC.Model\Wjire.RPC.Model.csproj" />
-    <ProjectReference Include="..\Wjire.RPC.Serializer\Wjire.RPC.Serializer.csproj" />
   </ItemGroup>
 
 </Project>

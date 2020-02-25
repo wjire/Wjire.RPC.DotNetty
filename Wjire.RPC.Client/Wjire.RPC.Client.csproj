@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>wjire</Authors>
+    <Company>wjire</Company>
+    <Description>The client of Light-weight RPC Frameworks based on DotNetty.基于DotNetty的轻量级RPC框架客户端</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,11 +15,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Wjire.RPC.Model\Wjire.RPC.Model.csproj" />
-    <ProjectReference Include="..\Wjire.RPC.Serializer\Wjire.RPC.Serializer.csproj" />
   </ItemGroup>
 
 </Project>

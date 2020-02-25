@@ -1,7 +1,7 @@
 ﻿
 using MessagePack;
 
-namespace Wjire.RPC.DotNetty.Model
+namespace Wjire.RPC.Common.Message
 {
     [MessagePackObject]
     public class RpcResponse

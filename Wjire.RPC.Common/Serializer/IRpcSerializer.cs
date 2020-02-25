@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wjire.RPC.DotNetty.Serializer
+namespace Wjire.RPC.Common.Serializer
 {
     public interface IRpcSerializer
     {
@@ -9,7 +9,5 @@ namespace Wjire.RPC.DotNetty.Serializer
         byte[] ToBytes(object obj);
 
         T ToObject<T>(byte[] bytes);
-
-        string ToString(object obj);
     }
 }

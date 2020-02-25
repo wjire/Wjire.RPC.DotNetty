@@ -1,7 +1,7 @@
 ﻿using System;
 using MessagePack;
 
-namespace Wjire.RPC.Serializer
+namespace Wjire.RPC.Common.Serializer
 {
     public class RpcMessagePackSerializer : IRpcSerializer
     {

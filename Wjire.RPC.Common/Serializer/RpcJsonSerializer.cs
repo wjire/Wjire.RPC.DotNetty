@@ -2,7 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Wjire.RPC.Serializer
+namespace Wjire.RPC.Common.Serializer
 {
     public class RpcJsonSerializer : IRpcSerializer
     {
