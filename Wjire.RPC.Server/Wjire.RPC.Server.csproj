@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>The server of Light-weight RPC Frameworks based on DotNetty.基于DotNetty的轻量级RPC框架服务端</Description>
     <Authors>wjire</Authors>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

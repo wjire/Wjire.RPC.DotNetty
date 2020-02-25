@@ -5,6 +5,7 @@
     <Authors>wjire</Authors>
     <Company>wjire</Company>
     <Description>The client of Light-weight RPC Frameworks based on DotNetty.基于DotNetty的轻量级RPC框架客户端</Description>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
