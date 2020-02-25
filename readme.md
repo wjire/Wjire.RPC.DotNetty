@@ -121,7 +121,7 @@
                           //.AddSingleton<IRpcSerializer,RpcMessagePackSerializer>()//使用 MessagePack 序列化.默认采用 Newtonsoft.Json
                           //启动服务两种方式
                           //.AddRpcServer(x=>x.Port = 7878);
-                          .AddRpcServer();//读取配置文件 "ServerConfig" 节点
+                          .AddRpcServer();//读取配置文件
                   }).UseWindowsService();
         }
 
@@ -159,8 +159,23 @@
 
 
     客户端
+
          //内部已做单例
          ITest client = ClientFactory.GetClient<ITest>();//默认读取配置文件,优先级,appsettings.Development.json > appsettings.json
          //ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 9999);
          //ITest client = ClientFactory.GetClient<ITest>(new ClientConfig{...});
          Person person = client.GetPerson(1);
+
+    客户端配置:
+        
+        {
+          "ClientConfig": {
+            "Ip": "127.0.0.1",
+            "Port": 7878
+            //以下配置均为默认值
+            //"TimeOut": 3, //单位:秒
+            //"PooledObjectMax": //默认 Environment.ProcessorCount * 2;
+            //"SoSndbuf": 65536,
+            //"SoRcvbuf": 65536
+          }
+        }
