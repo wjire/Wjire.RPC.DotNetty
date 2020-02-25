@@ -2,7 +2,7 @@
 
 服务端安装 Wjire.RPC.Server
 
-客户端需要安装 Wjire.RPC.Client
+客户端安装 Wjire.RPC.Client
 
 example:
 
