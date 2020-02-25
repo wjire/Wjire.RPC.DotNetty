@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IServices\IServices.csproj" />
-    <ProjectReference Include="..\Wjire.RPC.DotNetty\Wjire.RPC.DotNetty.csproj" />
+    <ProjectReference Include="..\Wjire.RPC.Client\Wjire.RPC.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

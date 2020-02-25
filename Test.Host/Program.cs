@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services;
+using Wjire.RPC.Server;
 
 namespace Test.Host
 {
@@ -22,7 +23,7 @@ namespace Test.Host
                         .AddSingleton<IFoo, Foo>()
                         //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
                         //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
-                        .AddHostedService<Wjire.RPC.DotNetty.Server>();
+                        .AddHostedService<Server>();
                 }).UseWindowsService();
         }
     }

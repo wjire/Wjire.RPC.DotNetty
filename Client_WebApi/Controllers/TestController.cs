@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using IServices;
 using Microsoft.AspNetCore.Mvc;
-using Wjire.RPC.DotNetty.Client;
+using Wjire.RPC.Client;
 
 namespace Client_WebApi.Controllers
 {
@@ -15,7 +15,7 @@ namespace Client_WebApi.Controllers
         {
             int count = 1000;
             Task[] tasks = new Task[count];
-            ClientConfig config = new ClientConfig("127.0.0.1", 9999);
+            ClientConfig config = new ClientConfig();
             ITest client = ClientFactory.GetClient<ITest>(config);
             for (int i = 0; i < tasks.Length; i++)
             {

@@ -9,9 +9,8 @@
   <ItemGroup>
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Wjire.RPC.DotNetty\Wjire.RPC.DotNetty.csproj" />
+    <PackageReference Include="MessagePack" Version="2.1.90" />
   </ItemGroup>
 
 </Project>

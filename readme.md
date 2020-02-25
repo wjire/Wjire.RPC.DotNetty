@@ -1,38 +1,19 @@
-在前辈的基础上做的修改和优化,前辈的代码在这里 : https://github.com/Coldairarrow/DotNettyRPC
+在前辈的基础上做的修改,前辈的代码在这里 : https://github.com/Coldairarrow/DotNettyRPC
 
-框    架:   .NET Standard 2.0
-
-    "DotNetty.Codecs" Version="0.6.0"
-    "DotNetty.Transport" Version="0.6.0"
-    "ImpromptuInterface" Version="7.0.1"
-    "MessagePack" Version="2.1.90"
-    "Microsoft.Extensions.Hosting" Version="3.1.2"
-    "Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2"
-    "Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.2"
-    "Microsoft.Extensions.Configuration" Version="3.1.2"
-    "Microsoft.Extensions.Configuration.Binder" Version="3.1.2"
-    "Microsoft.Extensions.DependencyInjection" Version="3.1.2"
-    "Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2"
-    "Microsoft.Extensions.ObjectPool" Version="3.1.2"
-    "Newtonsoft.Json" Version="12.0.3"
-    "System.ServiceModel.Primitives" Version="4.7.0"
-    "Wjire.Log" Version="1.0.3"
-
+客户端需要安装 Wjire.RPC.Client
+服务端需要安装 Wjire.RPC.Server
 
 1个 ip:port 代表1个 ClientGroup.
 1个服务器契约类型代表1个 Client.
 1个 ClientGroup 可以有多个 Client.
 1个 ClientGroup 使用同一个 ChannelPool.
 
-一.服务端启动时:
-
-    1.通过 IConfiguration 加载配置文件;
-    2.通过反射找到标注有[ServiceContract]特性的接口,构建 Type.FullName 和 Type 的键值对;
+一.服务端启动时,通过反射找到标注有[ServiceContract]特性的接口,构建 Type.FullName 和 Type 的键值对;
 
 二.客户端发起请求前:
 
     1.保存本次调用的服务契约的 Type.
-    2.构造一个 ClientWaiter ,内部封装了一个信号量 ManualResetEventSlim ,并设置了超时时间 TimeOut.
+    2.构造一个 ClientWaiter ,内部封装了一个信号量 ManualResetEventSlim ,并设置了超时时间 TimeOut,默认3秒.
 
     客户端发起请求时传递给服务端的消息实体:
 
@@ -43,10 +24,9 @@
             public string ServiceContractFullName { get; set; }
         }
 
-三.客户端发起请求:
-    通过 ChannelPool 获取 DotNetty 的 Channel,发起请求并调用 ClientWaiter 等待返回结果.若超时,则抛出异常.
+三.客户端发起请求时,通过 ChannelPool 获取 DotNetty 的 Channel,并调用 ClientWaiter 等待返回结果.若超时,则抛出异常.
 
-四.服务端收到请求后,根据请求消息中的 ServiceContractFullName 找到服务器契约的 Type,再通过微软自带的DI容器得到 service.然后根据请求消息中的 MethodName 及 Arguments,通过反射,调用 service 的方法得到结果并返回客户端.
+四.服务端收到请求后,根据请求消息中的 ServiceContractFullName 找到服务器契约的 Type,再通过 DI 容器得到 service.然后根据请求消息中的 MethodName 及 Arguments,通过反射,调用 service 的方法得到结果并返回客户端.
 
     服务端返回的消息实体:
 
@@ -66,7 +46,7 @@
 
     实体:
 
-        //特性是 MessagePack 序列化需要的.如果用默认的 Json 序列化则不需要这些特性    
+        //特性是 MessagePack 序列化需要的.如果用默认的 Newtonsoft.Json 序列化则不需要这些特性    
         [MessagePackObject]
         public class Person
         {
@@ -109,7 +89,7 @@
     
         {
           "ServerConfig": {
-            "Port": 9999,
+            "Port": 7878,
             //以下配置均为默认值
             //"AcceptorEventLoopCount": 1,
             //"ClientEventLoopCount": //默认 Environment.ProcessorCount * 2;
@@ -123,25 +103,25 @@
 
     服务端宿主:
 
-        internal class Program
+        private static void Main(string[] args)
         {
-            private static void Main(string[] args)
-            {
-                CreateHostBuilder(args).Build().Run();
-            }
+            CreateHostBuilder(args).Build().Run();
+        }
 
-            public static IHostBuilder CreateHostBuilder(string[] args)
-            {
-                return Host.CreateDefaultBuilder(args)
-                      .ConfigureServices((hostContext, services) =>
-                      {
-                          services
-                              .AddSingleton<ITest, Test>()
-                            //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
-                            //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();// MessagePack
-                              .AddHostedService<Wjire.RPC.DotNetty.Server>();
-                      }).UseWindowsService();//方便做 windows 服务
-            }
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                  .ConfigureServices((hostContext, services) =>
+                  {
+                      services
+                          //注册服务
+                          .AddSingleton<ITest, Test>()
+                          .AddSingleton<IFoo, Foo>()
+                          //.AddSingleton<IRpcSerializer,RpcMessagePackSerializer>()//使用 MessagePack 序列化.默认采用 Newtonsoft.Json
+                          //启动服务两种方式
+                          //.AddRpcServer(x=>x.Port = 7878);
+                          .AddRpcServer();//读取配置文件 "ServerConfig" 节点
+                  }).UseWindowsService();
         }
 
     

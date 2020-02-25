@@ -4,7 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using IServices;
 using Newtonsoft.Json;
-using Wjire.RPC.DotNetty.Client;
+using Wjire.RPC.Client;
+using Wjire.RPC.Serializer;
 
 namespace Client
 {
@@ -15,8 +16,9 @@ namespace Client
         private static void Main(string[] args)
         {
 
-            int count = 1;
-            Test3(count);
+            Test2(12345);
+            Console.ReadKey();
+            Test3(11111);
 
 
 
@@ -61,9 +63,6 @@ namespace Client
 
 
 
-                //Test2(11111);
-                //Console.ReadKey();
-                //Test3(31111);
             }
 
             Console.WriteLine("over");
@@ -87,10 +86,14 @@ namespace Client
         private static void Test2(int count)
         {
             Task[] tasks = new Task[count];
-            ClientConfig config = new ClientConfig();
             for (int i = 0; i < tasks.Length; i++)
             {
-                ITest client = ClientFactory.GetClient<ITest>(config);
+                ITest client = ClientFactory.GetClient<ITest>(() => new ClientConfig
+                {
+                    Ip = "127.0.0.1",
+                    Port = 7878,
+                    //RpcSerializer = new RpcMessagePackSerializer()
+                });
                 int id = i;
                 tasks[i] = Task.Run(() =>
                 {
@@ -105,7 +108,12 @@ namespace Client
         {
             for (int i = 0; i < count; i++)
             {
-                ITest client = ClientFactory.GetClient<ITest>();
+                ITest client = ClientFactory.GetClient<ITest>(() => new ClientConfig
+                {
+                    Ip = "127.0.0.1",
+                    Port = 7878,
+                    //RpcSerializer = new RpcMessagePackSerializer()
+                });
                 Person person = client.GetPerson(i);
                 Console.WriteLine(JsonConvert.SerializeObject(person));
             }

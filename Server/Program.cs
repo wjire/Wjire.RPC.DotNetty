@@ -1,7 +1,9 @@
-﻿using IServices;
+﻿using System;
+using IServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services;
+using Wjire.RPC.Server;
 
 namespace Server
 {
@@ -18,11 +20,13 @@ namespace Server
                   .ConfigureServices((hostContext, services) =>
                   {
                       services
+                          //注册服务
                           .AddSingleton<ITest, Test>()
                           .AddSingleton<IFoo, Foo>()
-                          //.AddSingleton<IRpcSerializer, RpcJsonSerializer>()//默认就是 Json
-                          //.AddSingleton<IRpcSerializer, RpcMessagePackSerializer>();
-                          .AddHostedService<Wjire.RPC.DotNetty.Server>();
+                          //.AddSingleton<IRpcSerializer,RpcMessagePackSerializer>()//使用 MessagePack 序列化.默认采用 Newtonsoft.Json
+                          //启动服务两种方式
+                          //.AddRpcServer(x=>x.Port = 7878);
+                          .AddRpcServer();//读取配置文件 "ServerConfig" 节点
                   }).UseWindowsService();
         }
     }
