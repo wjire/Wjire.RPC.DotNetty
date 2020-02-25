@@ -16,4 +16,8 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Wjire.RPC.Common\Wjire.RPC.Common.csproj" />
+  </ItemGroup>
+
 </Project>

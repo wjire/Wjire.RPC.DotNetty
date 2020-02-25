@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using Wjire.RPC.Model;
-using Wjire.RPC.Serializer;
+using Wjire.RPC.Common.Message;
+using Wjire.RPC.Common.Serializer;
 
 namespace Wjire.RPC.Server
 {

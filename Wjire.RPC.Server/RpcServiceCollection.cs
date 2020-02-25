@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Wjire.RPC.Model;
+using Wjire.RPC.Common.Message;
 
 namespace Wjire.RPC.Server
 {

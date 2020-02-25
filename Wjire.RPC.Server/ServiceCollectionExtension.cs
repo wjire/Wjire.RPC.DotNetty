@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Wjire.RPC.Serializer;
+using Wjire.RPC.Common.Serializer;
 
 namespace Wjire.RPC.Server
 {

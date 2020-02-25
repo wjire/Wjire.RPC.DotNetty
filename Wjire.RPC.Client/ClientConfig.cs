@@ -1,5 +1,5 @@
 ﻿using System;
-using Wjire.RPC.Serializer;
+using Wjire.RPC.Common.Serializer;
 
 namespace Wjire.RPC.Client
 {

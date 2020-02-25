@@ -76,7 +76,7 @@ namespace Wjire.RPC.Server
                       pipeline.AddLast(_channelHandler);
                   }));
          };
-        
+
 
         public override void Dispose()
         {

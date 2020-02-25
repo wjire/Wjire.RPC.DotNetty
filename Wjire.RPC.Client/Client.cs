@@ -3,8 +3,8 @@ using System.Dynamic;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.ObjectPool;
-using Wjire.RPC.Model;
-using Wjire.RPC.Serializer;
+using Wjire.RPC.Common.Message;
+using Wjire.RPC.Common.Serializer;
 
 namespace Wjire.RPC.Client
 {
