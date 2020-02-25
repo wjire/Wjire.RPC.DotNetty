@@ -1,7 +1,8 @@
 在前辈的基础上做的修改,前辈的代码在这里 : https://github.com/Coldairarrow/DotNettyRPC
 
+服务端安装 Wjire.RPC.Server
+
 客户端需要安装 Wjire.RPC.Client
-服务端需要安装 Wjire.RPC.Server
 
 1个 ip:port 代表1个 ClientGroup.
 1个服务器契约类型代表1个 Client.
