@@ -122,7 +122,7 @@ Windows 服务常用命令
 客户端
 
      //内部已做单例
-     ITest client = ClientFactory.GetClient<ITest>();//默认读取配置文件,优先级,appsettings.Development.json > appsettings.json
+     ITest client = ClientFactory.GetClient<ITest>();//默认读取配置文件
      //ITest client = ClientFactory.GetClient<ITest>("127.0.0.1", 7878);
      //ITest client = ClientFactory.GetClient<ITest>(new ClientConfig{...});
      Person person = client.GetPerson(1);
